@@ -10,7 +10,7 @@ import connectToDB from './src/config/db.js'
 
 dotenv.config()
 
-const PORT = process.env.PORT || 8000 ;
+const PORT = process.env.PORT || 3000 ;
 
 const startServer = async () => {
 

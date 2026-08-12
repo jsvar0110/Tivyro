@@ -1,1 +1,97 @@
-@import "tailwindcss"
+@import "tailwindcss";
+
+/* ─── Aurelian Dark — Design System Tokens ─────────────────────────────────── */
+@theme {
+  /* Fonts */
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-inter: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-geist: "Geist", "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  /* Color palette */
+  --color-background:              #121317;
+  --color-surface:                 #121317;
+  --color-surface-dim:             #121317;
+  --color-surface-bright:          #38393d;
+  --color-surface-container-lowest:#0d0e12;
+  --color-surface-container-low:   #1a1b1f;
+  --color-surface-container:       #1e1f23;
+  --color-surface-container-high:  #292a2e;
+  --color-surface-container-highest:#343539;
+  --color-surface-variant:         #343539;
+  --color-surface-tint:            #f1c03f;
+
+  --color-on-surface:              #e3e2e7;
+  --color-on-surface-variant:      #d2c5ae;
+  --color-on-background:           #e3e2e7;
+
+  --color-primary:                 #ffe3a8;
+  --color-primary-container:       #f5c342;
+  --color-primary-fixed:           #ffdf99;
+  --color-primary-fixed-dim:       #f1c03f;
+  --color-on-primary:              #3f2e00;
+  --color-on-primary-container:    #6b5100;
+  --color-on-primary-fixed:        #251a00;
+
+  --color-secondary:               #c8c6c5;
+  --color-secondary-container:     #474746;
+  --color-on-secondary:            #313030;
+  --color-on-secondary-container:  #b7b5b4;
+
+  --color-outline:                 #9b8f7b;
+  --color-outline-variant:         #4e4634;
+
+  --color-error:                   #ffb4ab;
+  --color-error-container:         #93000a;
+  --color-on-error:                #690005;
+  --color-on-error-container:      #ffdad6;
+
+  /* Card surfaces (used in components) */
+  --color-card:                    #1c1c1c;
+  --color-card-border:             #252525;
+  --color-input-bg:                #1a1a1a;
+  --color-input-border:            #2c2c2c;
+  --color-golden:                  #f5c342;
+  --color-golden-glow:             rgba(245,195,66,0.15);
+  --color-golden-hover-glow:       rgba(245,195,66,0.30);
+
+  /* Spacing */
+  --spacing-unit:    8px;
+  --spacing-xs:      4px;
+  --spacing-sm:      12px;
+  --spacing-md:      24px;
+  --spacing-lg:      48px;
+  --spacing-xl:      80px;
+  --spacing-gutter:  24px;
+
+  /* Border radii */
+  --radius-DEFAULT: 0.25rem;
+  --radius-lg:      0.5rem;
+  --radius-full:    9999px;
+}
+
+/* ─── Base Styles ──────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { color-scheme: dark; }
+
+body {
+  margin: 0;
+  background-color: var(--color-background);
+  color: var(--color-on-background);
+  font-family: var(--font-inter);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+}
+
+/* ─── Material Symbols Fix ────────────────────────────────────────────────── */
+/* Kept as a plain rule — Tailwind can't declare a custom @font-face-backed
+   font-family utility on its own, so this stays outside @theme. */
+.material-symbols-outlined {
+  font-family: "Material Symbols Outlined";
+  font-size: 20px;
+  font-style: normal;
+  line-height: 1;
+  vertical-align: middle;
+  user-select: none;
+}
