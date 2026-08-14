@@ -156,7 +156,7 @@ export default function Login() {
             </h2>
 
             <p className="font-geist text-[15px] text-on-surface-variant leading-relaxed max-w-sm">
-              Your curated world of premium fashion awaits. Sign in to continue your journey.
+              
             </p>
 
             {/* Stats */}
@@ -177,7 +177,7 @@ export default function Login() {
 
         {/* ── Right Side: Form ── */}
         <div className="w-full lg:w-1/2 flex flex-col items-center justify-center py-sm px-gutter overflow-y-auto z-10">
-          <div className="login-card w-full max-w-[460px] bg-card border border-card-border rounded-lg px-6 py-7 relative shadow-[0_32px_64px_rgba(0,0,0,0.65),0_0_0_1px_var(--color-card-border)] shrink-0 my-auto">
+          <div className="login-card left-5 w-full max-w-[460px] bg-card border border-card-border rounded-lg px-6 py-7 relative shadow-[0_32px_64px_rgba(0,0,0,0.65),0_0_0_1px_var(--color-card-border)] shrink-0 my-auto">
 
             {/* Sheen line at top of card */}
             <div aria-hidden="true" className="absolute top-0 left-0 right-0 h-[1px] card-sheen rounded-t-lg" />
