@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../hook/useAuth";
 import { useNavigate } from "react-router";
+import ContinueWithGoogle from "../components/ContinueWithGoogle";
 
 // ─── Field Label ───────────────────────────────────────────────────────────────
 function Label({ htmlFor, children }) {
@@ -156,14 +157,14 @@ export default function Login() {
             </h2>
 
             <p className="font-geist text-[15px] text-on-surface-variant leading-relaxed max-w-sm">
-              
+
             </p>
 
             {/* Stats */}
             <div className="mt-10 flex gap-8">
               {[
                 { value: "50K+", label: "Members" },
-                { value: "2K+",  label: "Brands" },
+                { value: "2K+", label: "Brands" },
                 { value: "100%", label: "Premium" },
               ].map((s) => (
                 <div key={s.label}>
@@ -205,9 +206,9 @@ export default function Login() {
 
               <div className="golden-bar h-[3px] bg-golden rounded-full mx-auto mb-3" />
 
-              <p className="font-inter text-[14px] text-on-surface-variant">
+              {/* <p className="font-inter text-[14px] text-on-surface-variant">
                 Access your premium account.
-              </p>
+              </p> */}
             </div>
 
             {/* ── Form ── */}
@@ -306,6 +307,9 @@ export default function Login() {
                 <span className="font-geist text-[12px] text-on-surface-variant/50 tracking-[0.08em] uppercase">or</span>
                 <div className="flex-1 h-px bg-card-border" />
               </div>
+
+              {/* Google Sign-In */}
+              <ContinueWithGoogle className="mb-4" />
 
               {/* Register redirect */}
               <div className="text-center">
