@@ -12,7 +12,7 @@ export async function createProduct(req , res) {
 
         return await uploadFile({
             buffer : file.buffer ,
-            fileName : file.originalName
+            fileName : file.originalname
         })
 
     }))
@@ -27,7 +27,7 @@ export async function createProduct(req , res) {
             
             amount : priceAmount ,
 
-            currency : priceCurrency
+            currency : priceCurrency || "INR"
 
         } ,
 
