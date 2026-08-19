@@ -203,7 +203,7 @@ export default function Login() {
           <div className="hidden lg:block lg:w-[46%] relative login-hero overflow-hidden">
             <div className="absolute inset-0 z-0">
               <img
-                src="https://images.unsplash.com/photo-1558769132-cb1aea458c5e?q=80&w=1974&auto=format&fit=crop"
+                src="/Tivyro.png"
                 alt="Snitch Fashion Editorial"
                 style={{ width:"100%", height:"100%", objectFit:"cover", opacity: tk.imgOpacity, mixBlendMode: tk.imgBlend, filter: tk.imgFilter, transition:"opacity .4s, filter .4s" }}
               />

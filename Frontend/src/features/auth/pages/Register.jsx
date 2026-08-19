@@ -100,7 +100,7 @@ export default function Register() {
     width: "100%",
     fontSize: "0.875rem",
     lineHeight: "1.5",
-    padding: "0.55rem 1rem 0.55rem 2.4rem",
+    padding: "0.42rem 1rem 0.42rem 2.2rem",
     transition: "border-color 0.2s, box-shadow 0.2s",
   };
 
@@ -240,8 +240,8 @@ export default function Register() {
           <div className="hidden lg:block lg:w-[46%] relative reg-hero overflow-hidden">
             <div className="absolute inset-0 z-0">
               <img
-                src="https://images.unsplash.com/photo-1445205170230-053b83016050?q=80&w=2071&auto=format&fit=crop"
-                alt="Snitch Fashion Editorial"
+                src="/Tivyro.png"
+                alt="Tivyro Fashion Editorial"
                 style={{ width:"100%", height:"100%", objectFit:"cover", opacity: tk.imgOpacity, mixBlendMode: tk.imgBlend, filter: tk.imgFilter, transition:"opacity .4s, filter .4s" }}
               />
               <div className="absolute inset-0" style={{ background: tk.panelGrad }} />
@@ -292,13 +292,13 @@ export default function Register() {
               {/* Mobile brand mark */}
               <div className="lg:hidden mb-6">
                 <span className="text-sm tracking-[0.3em] uppercase" style={{ fontFamily:"'Cormorant Garamond', serif", color: tk.golden }}>
-                  Snitch.
+                  Tivyro.
                 </span>
               </div>
 
               {/* Card */}
               <div
-                className="relative rounded-lg px-6 py-7"
+                className="relative rounded-lg px-6 py-5"
                 style={{
                   backgroundColor: tk.cardBg,
                   border: `1px solid ${tk.cardBorder}`,
@@ -323,21 +323,21 @@ export default function Register() {
                 />
 
                 {/* ── Card Header ── */}
-                <div className="mb-5 text-center relative z-[1]">
-                  <div
-                    className="inline-flex items-center justify-center w-11 h-11 rounded-full mb-3"
+                <div className="mb-1.5 text-center relative z-[1]">
+                  {/* <div
+                    className="inline-flex items-center justify-center w-9 h-9 rounded-full mb-2"
                     style={{ border:`1px solid ${tk.golden}40`, backgroundColor:`${tk.golden}18` }}
                   >
-                    <span className="material-symbols-outlined" style={{ color: tk.golden, fontSize:"20px" }}>person_add</span>
-                  </div>
+                    <span className="material-symbols-outlined" style={{ color: tk.golden, fontSize:"17px" }}>person_add</span>
+                  </div> */}
 
                   <p className="text-[10px] font-semibold tracking-[0.2em] uppercase mb-1" style={{ color: tk.golden, fontFamily:"'Geist', sans-serif" }}>
-                    Join Snitch
+                    Join Tivyro
                   </p>
 
                   <h1
                     className="font-light leading-[1.15] mb-2"
-                    style={{ fontFamily:"'Cormorant Garamond', serif", fontSize:"clamp(1.55rem,2.5vw,1.95rem)", color: tk.text }}
+                    style={{ fontFamily:"'Cormorant Garamond', serif", fontSize:"clamp(1.2rem,2.1vw,1.6rem)", color: tk.text }}
                   >
                     Create <em style={{ color: tk.golden }}>Account</em>
                   </h1>
@@ -346,7 +346,7 @@ export default function Register() {
                 </div>
 
                 {/* ── Form ── */}
-                <form onSubmit={handleSubmit} className="relative z-[1] flex flex-col gap-3.5">
+                <form onSubmit={handleSubmit} className="relative z-[1] flex flex-col gap-2.5">
 
                   {/* Full Name */}
                   <FieldWrap label="Full Name" htmlFor="reg-fullName" tk={tk}>
@@ -408,7 +408,7 @@ export default function Register() {
 
                   {/* Seller toggle */}
                   <div
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-lg"
+                    className="flex items-center gap-3 px-13 py-1 rounded-lg"
                     style={{ backgroundColor: tk.sellerRowBg, border:`1px solid ${tk.sellerRowBorder}` }}
                   >
                     <input
@@ -431,7 +431,7 @@ export default function Register() {
                   <button
                     id="reg-submit"
                     type="submit" disabled={isLoading}
-                    className="reg-cta w-full py-2.5 rounded text-sm font-semibold tracking-[0.08em] uppercase cursor-pointer flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed mt-0.5"
+                    className="reg-cta w-full py-2 rounded text-sm font-semibold tracking-[0.08em] uppercase cursor-pointer flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed mt-0.5"
                     style={{ backgroundColor: tk.submitBg, color: tk.submitText, border:"none", fontFamily:"'Geist', sans-serif" }}
                     onMouseEnter={e => { if(!isLoading){ e.currentTarget.style.backgroundColor = tk.submitHoverBg; } }}
                     onMouseLeave={e => { if(!isLoading){ e.currentTarget.style.backgroundColor = tk.submitBg; } }}
