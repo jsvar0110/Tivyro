@@ -243,7 +243,7 @@ export default function Register() {
           <div className="hidden lg:block lg:w-[46%] relative reg-hero overflow-hidden">
             <div className="absolute inset-0 z-0">
               <img
-                src="/Tivyro.png"
+                src={dark ? "/Tivyro-dark.png" : "/Tivyro.png"}
                 alt="Tivyro Fashion Editorial"
                 style={{ width:"100%", height:"100%", objectFit:"cover", opacity: tk.imgOpacity, mixBlendMode: tk.imgBlend, filter: tk.imgFilter, transition:"opacity .4s, filter .4s" }}
               />
@@ -469,8 +469,8 @@ export default function Register() {
                       href="/login"
                       className="font-medium no-underline transition-opacity duration-200"
                       style={{ color: tk.golden }}
-                      onMouseEnter={e => e.target.style.opacity = "0.72"}
-                      onMouseLeave={e => e.target.style.opacity = "1"}
+                      onMouseEnter={(e) => { e.target.style.color = tk.golden;}}
+                      onMouseLeave={(e) => {e.target.style.opacity = "1"; e.target.style.color = tk.text}}
                     >
                       Sign in
                     </a>

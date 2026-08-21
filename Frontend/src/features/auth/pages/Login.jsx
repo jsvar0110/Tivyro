@@ -45,10 +45,10 @@ export default function Login() {
     inputBg: d ? "#1a1a1a" : "#f5f3f0",
     newText: d ? "#f5c342" : "#ffffff",
     bgGold: d ? "rgb(179 154 91 / 6%)" : "rgb(225 180 65 / 40%)",
-    goldWhite :      d ? "#ffffff" : "#000000" , 
+    // text :      d ? "#ffffff" : "#000000" , 
     inputBorder: d ? "#2c2c2c" : "#ddd8d0",
     focusColor: d ? "#f5c342" : "#C9A96E",
-    text: d ? "#e3e2e7" : "#1b1c1a",
+    text: d ? "#ffffff" : "#000000",
     textMuted: d ? "#d2c5ae" : "#5a5650",
     textSubtle: d ? "#9b8f7b" : "#9b9490",
     golden: d ? "#f5c342" : "rgb(255, 187, 0)",
@@ -170,7 +170,7 @@ export default function Login() {
           style={{ backgroundColor: tk.headerBg, borderColor: tk.divider }}
         >
           <div className="max-w-[1280px] mx-auto h-14 flex items-center justify-between">
-            <span style={{ fontFamily: "'Cormorant Garamond', serif", color: tk.goldWhite, fontSize: "22px", fontWeight: "500", letterSpacing: "0.12em", cursor: "pointer" }}>
+            <span style={{ fontFamily: "'Cormorant Garamond', serif", color: tk.text, fontSize: "22px", fontWeight: "500", letterSpacing: "0.12em", cursor: "pointer" }}>
               Tivyro.
             </span>
             <div className="flex items-center gap-4">
@@ -206,7 +206,7 @@ export default function Login() {
           <div className="hidden lg:block lg:w-[46%] relative login-hero overflow-hidden">
             <div className="absolute inset-0 z-0">
               <img
-                src="/Tivyro.png"
+                src={dark ? "/Tivyro-dark.png" : "/Tivyro.png"}
                 alt="Tivyro Fashion Editorial"
                 style={{ width: "100%", height: "100%", objectFit: "cover", opacity: tk.imgOpacity, mixBlendMode: tk.imgBlend, filter: tk.imgFilter, transition: "opacity .4s, filter .4s" }}
               />
@@ -347,9 +347,9 @@ export default function Login() {
                       <a
                         href="/forgot-password"
                         className="text-[12px] no-underline transition-colors duration-200"
-                        style={{ color: `${tk.goldWhite}cc`, fontFamily: "'Geist', sans-serif" }}
+                        style={{ color: `${tk.text}cc`, fontFamily: "'Geist', sans-serif" }}
                         onMouseEnter={e => e.target.style.color = tk.golden}
-                        onMouseLeave={e => e.target.style.color = `${tk.goldWhite}cc`}
+                        onMouseLeave={e => e.target.style.color = `${tk.text}cc`}
                       >
                         Forgot password?
                       </a>
@@ -417,9 +417,9 @@ export default function Login() {
                     <a
                       href="/register"
                       className="ml-1 font-[12px] no-underline transition-opacity duration-200"
-                      style={{ color: tk.goldWhite }}
+                      style={{ color: tk.text }}
                       onMouseEnter={(e) => { e.target.style.color = tk.golden;}}
-                      onMouseLeave={(e) => {e.target.style.opacity = "1"; e.target.style.color = tk.goldWhite}}
+                      onMouseLeave={(e) => {e.target.style.opacity = "1"; e.target.style.color = tk.text}}
                     >
                       Create one
                     </a>
