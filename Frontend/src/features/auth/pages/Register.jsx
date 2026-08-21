@@ -4,7 +4,7 @@ import { useNavigate } from "react-router";
 import ContinueWithGoogle from "../components/ContinueWithGoogle";
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   Snitch — Register Page (v2)
+   Tivyro — Register Page (v2)
    Editorial split-panel · Dark / Light mode toggle
    Fonts: Cormorant Garamond (editorial headings) + Inter + Geist
    Tailwind CSS + Aurelian Dark design-system tokens
@@ -56,22 +56,25 @@ export default function Register() {
     pageBg:          d ? "#121317" : "#fbf9f6",
     cardBg:          d ? "#1c1c1c" : "#ffffff",
     cardBorder:      d ? "#252525" : "#e5e1db",
+    newText:        d ? "#f5c342" : "#ffffff",
+    bgGold :       d ? "rgb(179 154 91 / 6%)" : "rgb(225 180 65 / 40%)",
+    goldWhite :      d ? "#ffffff" : "#000000" , 
     inputBg:         d ? "#1a1a1a" : "#f5f3f0",
     inputBorder:     d ? "#2c2c2c" : "#ddd8d0",
-    focusColor:      d ? "#f5c342" : "#C9A96E",
+    focusColor:      d ? "#f5c342" : "rgb(201, 169, 110)",
     text:            d ? "#e3e2e7" : "#1b1c1a",
     textMuted:       d ? "#d2c5ae" : "#5a5650",
     textSubtle:      d ? "#9b8f7b" : "#9b9490",
-    golden:          d ? "#f5c342" : "#C9A96E",
+    golden:          d ? "#f5c342" : "rgb(255, 187, 0)",
     divider:         d ? "#252525" : "#e5e1db",
     headerBg:        d ? "rgba(18,19,23,0.92)" : "rgba(251,249,246,0.92)",
     footerBg:        d ? "#0d0e12" : "#f5f3f0",
-    orb1:            d ? "rgba(245,195,66,0.07)" : "rgba(201,169,110,0.09)",
-    orb2:            d ? "rgba(245,195,66,0.045)" : "rgba(201,169,110,0.06)",
-    sellerRowBg:     d ? "rgba(245,195,66,0.04)"  : "rgba(201,169,110,0.06)",
-    sellerRowBorder: d ? "rgba(245,195,66,0.12)"  : "rgba(201,169,110,0.20)",
-    glowFocus:       d ? "rgba(245,195,66,0.18)"  : "rgba(201,169,110,0.18)",
-    imgOpacity:      d ? 0.42 : 0.52,
+    orb1:            d ? "rgba(245,195,66,0.07)" : "rgba(212,167,44,0.11)",
+    orb2:            d ? "rgba(245,195,66,0.045)" : "rgba(212,167,44,0.075)",
+    sellerRowBg:     d ? "rgba(245,195,66,0.04)"  : "rgba(212,167,44,0.06)",
+    sellerRowBorder: d ? "rgba(245,195,66,0.12)"  : "rgba(212,167,44,0.20)",
+    glowFocus:       d ? "rgba(245,195,66,0.18)"  : "rgba(212,167,44,0.18)",
+    imgOpacity:      d ? 0.42 : 0.92,
     imgBlend:        d ? "luminosity" : "normal",
     imgFilter:       d ? "none" : "sepia(10%) brightness(0.9)",
     panelGrad:       d
@@ -80,7 +83,7 @@ export default function Register() {
     heroText:        d ? "#e3e2e7" : "#ffffff",
     heroSub:         d ? "rgba(210,197,174,0.72)" : "rgba(255,255,255,0.72)",
     heroStatSub:     d ? "rgba(210,197,174,0.60)" : "rgba(255,255,255,0.60)",
-    cardGlow:        d ? "rgba(245,195,66,0.09)" : "rgba(201,169,110,0.10)",
+    cardGlow:        d ? "rgba(245,195,66,0.09)" : "rgb(229 211 165 / 31%)",
     submitBg:        d ? "#f5c342" : "#1b1c1a",
     submitText:      d ? "#111111" : "#fbf9f6",
     submitHoverBg:   d ? "#e8b63a" : "#2d2e2c",
@@ -204,8 +207,8 @@ export default function Register() {
           style={{ backgroundColor: tk.headerBg, borderColor: tk.divider }}
         >
           <div className="max-w-[1280px] mx-auto h-14 flex items-center justify-between">
-            <span style={{ fontFamily:"'Cormorant Garamond', serif", color: tk.golden, fontSize:"22px", fontWeight:"500", letterSpacing:"-0.01em", cursor:"pointer" }}>
-              Snitch.
+            <span style={{ fontFamily:"'Cormorant Garamond', serif", color: tk.goldWhite, fontSize:"20px", fontWeight:"500", letterSpacing:"0.12em", cursor:"pointer" }}>
+              Tivyro.
             </span>
             <div className="flex items-center gap-4">
               {/* Theme toggle */}
@@ -252,10 +255,10 @@ export default function Register() {
               {/* Badge */}
               <div
                 className="inline-flex items-center gap-2 px-3 py-1 rounded-full w-fit"
-                style={{ border:`1px solid ${tk.golden}4d`, backgroundColor:`${tk.golden}18` }}
+                style={{ border:`2px solid ${tk.golden}4d`, backgroundColor:`${tk.bgGold}` }}
               >
-                <span className="reg-dot w-1.5 h-1.5 rounded-full inline-block" style={{ backgroundColor: tk.golden }} />
-                <span className="text-xs font-semibold tracking-[0.18em] uppercase" style={{ color: tk.golden, fontFamily:"'Geist', sans-serif" }}>
+                <span className="reg-dot w-1.5 h-1.5 rounded-full inline-block" style={{ backgroundColor: tk.bgGold }} />
+                <span className="text-xs font-semibold tracking-[0.18em] uppercase" style={{ color: tk.newText, fontFamily:"'Geist', sans-serif" }}>
                   New Collection
                 </span>
               </div>
@@ -339,7 +342,7 @@ export default function Register() {
                     className="font-light leading-[1.15] mb-2"
                     style={{ fontFamily:"'Cormorant Garamond', serif", fontSize:"clamp(1.2rem,2.1vw,1.6rem)", color: tk.text }}
                   >
-                    Create <em style={{ color: tk.golden }}>Account</em>
+                    Create <em style={{ color: tk.golden , fontWeight:"500" , fontSize:"clamp(1.2rem,2.1vw,1.5rem)" }}>Account</em>
                   </h1>
 
                   <div className="reg-bar h-[2.5px] rounded-full mx-auto" style={{ backgroundColor: tk.golden }} />
@@ -482,7 +485,7 @@ export default function Register() {
         <footer className="py-3 px-6 border-t relative z-10" style={{ backgroundColor: tk.footerBg, borderColor: tk.divider }}>
           <div className="max-w-[1280px] mx-auto flex flex-row justify-between items-center flex-wrap gap-4">
             <span className="text-[12px] font-medium" style={{ color:`${tk.golden}b0`, fontFamily:"'Geist', sans-serif" }}>
-              © 2024 Snitch. All rights reserved.
+              © 2024 Tivyro. All rights reserved.
             </span>
             <nav className="flex gap-5">
               {["Privacy Policy", "Terms of Service", "Help"].map(link => (
