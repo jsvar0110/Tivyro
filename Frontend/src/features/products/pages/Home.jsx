@@ -11,8 +11,8 @@ import { Link } from 'react-router';
    Matches Login.jsx / Register.jsx design language exactly.
 ───────────────────────────────────────────────────────────────────────────── */
 
-const PLACEHOLDER_IMG =
-  'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=600&q=80';
+// const PLACEHOLDER_IMG =
+//   'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=600&q=80';
 
 const CATEGORIES = ['All', 'Clothing', 'Accessories', 'Footwear', 'Lifestyle'];
 
@@ -34,35 +34,35 @@ export default function Home() {
   /* ── Theme tokens (identical mapping as Login / Register) ── */
   const d = dark;
   const tk = {
-    pageBg:        d ? '#121317' : '#fbf9f6',
-    cardBg:        d ? '#1c1c1c' : '#ffffff',
-    cardBorder:    d ? '#252525' : '#e5e1db',
-    inputBg:       d ? '#1a1a1a' : '#f5f3f0',
-    inputBorder:   d ? '#2c2c2c' : '#ddd8d0',
-    focusColor:    d ? '#f5c342' : '#C9A96E',
-    text:          d ? '#e3e2e7' : '#1b1c1a',
-    textMuted:     d ? '#d2c5ae' : '#5a5650',
-    textSubtle:    d ? '#9b8f7b' : '#9b9490',
-    golden:        d ? '#f5c342' : 'rgb(201,169,110)',
-    goldenBright:  d ? '#f5c342' : 'rgb(255,187,0)',
-    divider:       d ? '#252525' : '#e5e1db',
-    headerBg:      d ? 'rgba(18,19,23,0.94)' : 'rgba(251,249,246,0.94)',
-    footerBg:      d ? '#0d0e12' : '#f5f3f0',
-    orb1:          d ? 'rgba(245,195,66,0.07)' : 'rgba(212,167,44,0.11)',
-    orb2:          d ? 'rgba(245,195,66,0.045)' : 'rgba(212,167,44,0.075)',
-    glowFocus:     d ? 'rgba(245,195,66,0.18)' : 'rgba(201,169,110,0.18)',
-    cardGlow:      d ? 'rgba(245,195,66,0.08)' : 'rgba(212,167,44,0.12)',
-    cardShadow:    d
+    pageBg: d ? '#121317' : '#fbf9f6',
+    cardBg: d ? '#1c1c1c' : '#ffffff',
+    cardBorder: d ? '#252525' : '#e5e1db',
+    inputBg: d ? '#1a1a1a' : '#f5f3f0',
+    inputBorder: d ? '#2c2c2c' : '#ddd8d0',
+    focusColor: d ? '#f5c342' : '#C9A96E',
+    text: d ? '#e3e2e7' : '#1b1c1a',
+    textMuted: d ? '#d2c5ae' : '#5a5650',
+    textSubtle: d ? '#9b8f7b' : '#9b9490',
+    golden: d ? '#f5c342' : 'rgb(201,169,110)',
+    goldenBright: d ? '#f5c342' : 'rgb(255,187,0)',
+    divider: d ? '#252525' : '#e5e1db',
+    headerBg: d ? 'rgba(18,19,23,0.94)' : 'rgba(251,249,246,0.94)',
+    footerBg: d ? '#0d0e12' : '#f5f3f0',
+    orb1: d ? 'rgba(245,195,66,0.07)' : 'rgba(212,167,44,0.11)',
+    orb2: d ? 'rgba(245,195,66,0.045)' : 'rgba(212,167,44,0.075)',
+    glowFocus: d ? 'rgba(245,195,66,0.18)' : 'rgba(201,169,110,0.18)',
+    cardGlow: d ? 'rgba(245,195,66,0.08)' : 'rgba(212,167,44,0.12)',
+    cardShadow: d
       ? '0 16px 48px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.03)'
       : '0 8px 32px rgba(27,24,20,0.09), 0 0 0 1px rgba(27,24,20,0.04)',
-    heroBg:        d
+    heroBg: d
       ? 'linear-gradient(135deg, #15161b 0%, #1a1a22 50%, #111217 100%)'
       : 'linear-gradient(135deg, #f5f2ec 0%, #ede8df 50%, #f8f5f0 100%)',
-    sheen:         d
+    sheen: d
       ? 'linear-gradient(90deg, transparent 0%, rgba(245,195,66,0.35) 40%, rgba(245,195,66,0.60) 50%, rgba(245,195,66,0.35) 60%, transparent 100%)'
       : 'linear-gradient(90deg, transparent 0%, rgba(201,169,110,0.35) 40%, rgba(201,169,110,0.55) 50%, rgba(201,169,110,0.35) 60%, transparent 100%)',
-    submitBg:      d ? '#f5c342' : '#1b1c1a',
-    submitText:    d ? '#111111' : '#fbf9f6',
+    submitBg: d ? '#f5c342' : '#1b1c1a',
+    submitText: d ? '#111111' : '#fbf9f6',
     submitHoverBg: d ? '#e8b63a' : '#2d2e2c',
   };
 
@@ -419,7 +419,7 @@ export default function Home() {
                 const currentImg =
                   imgs.length > 0
                     ? imgs[imgIndex[product._id] ?? 0]?.url
-                    : PLACEHOLDER_IMG;
+                    : null;
                 const isHovered = hoveredId === product._id;
 
                 return (
@@ -446,12 +446,19 @@ export default function Home() {
 
                     {/* Image block */}
                     <div className="relative overflow-hidden" style={{ aspectRatio: '3/4' }}>
-                      <img
-                        src={currentImg || PLACEHOLDER_IMG}
-                        alt={product.title}
-                        className="card-img w-full h-full object-cover"
-                        onError={(e) => { e.target.src = PLACEHOLDER_IMG; }}
-                      />
+                      {currentImg ? (
+                        <img
+                          src={currentImg}
+                          alt={product.title}
+                          className="card-img w-full h-full object-cover"
+                          onError={(e) => { e.target.style.display = 'none'; }}
+                        />
+                      ) : (
+                        <div
+                          className="w-full h-full"
+                          style={{ backgroundColor: dark ? '#1c1c1c' : '#f0ede6' }}
+                        />
+                      )}
 
                       {/* Gradient overlay */}
                       <div
