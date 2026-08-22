@@ -19,7 +19,7 @@ export const useProduct = () =>{
         
         const data = await getSellerProducts()
 
-        dispatch(getSellerProducts(data.products))
+        dispatch(setSellerProducts(data.products))
 
         return data.products
 
