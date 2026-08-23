@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { useProduct } from '../hooks/useProduct.js';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 
 /* ─────────────────────────────────────────────────────────────────────────────
    Tivyro — Home / Products Page
@@ -18,7 +18,10 @@ const CATEGORIES = ['All', 'Clothing', 'Accessories', 'Footwear', 'Lifestyle'];
 
 export default function Home() {
   const products = useSelector((state) => state.product.products);
+  const user = useSelector((state) => state.auth.user);
   const { handleGetAllProducts } = useProduct();
+
+  const navigate = useNavigate()
 
   const [dark, setDark] = useState(true);
   const [search, setSearch] = useState('');
@@ -244,13 +247,34 @@ export default function Home() {
               </button>
 
               {/* Sign In */}
-              <Link
-                to="/login"
-                className="text-[12px] font-semibold no-underline px-4 py-1.5 rounded tracking-[0.06em] uppercase"
-                style={{ backgroundColor: tk.submitBg, color: tk.submitText, fontFamily: "'Geist', sans-serif" }}
-              >
-                Sign In
-              </Link>
+              {/* Auth */}
+              {user ? (
+                <div className="flex items-center gap-3">
+                  <span
+                    className="text-[12px] font-medium"
+                    style={{ color: tk.text, fontFamily: "'Geist', sans-serif" }}
+                  >
+                    {user.fullname}
+                  </span>
+                  {user.role === 'seller' && (
+                    <Link
+                      to="/seller/dashboard"
+                      className="nav-link text-[12px] font-semibold no-underline px-4 py-1.5 rounded tracking-[0.06em] uppercase"
+                      style={{ backgroundColor: tk.submitBg, color: tk.submitText, fontFamily: "'Geist', sans-serif" }}
+                    >
+                      Seller Dashboard
+                    </Link>
+                  )}
+                </div>
+              ) : (
+                <Link
+                  to="/login"
+                  className="text-[12px] font-semibold no-underline px-4 py-1.5 rounded tracking-[0.06em] uppercase"
+                  style={{ backgroundColor: tk.submitBg, color: tk.submitText, fontFamily: "'Geist', sans-serif" }}
+                >
+                  Sign In
+                </Link>
+              )}
             </div>
           </div>
         </header>
@@ -419,7 +443,7 @@ export default function Home() {
                 const currentImg =
                   imgs.length > 0
                     ? imgs[imgIndex[product._id] ?? 0]?.url
-                    : null;
+                    : '/Tivyro.png';
                 const isHovered = hoveredId === product._id;
 
                 return (
@@ -434,6 +458,7 @@ export default function Home() {
                         : tk.cardShadow,
                       animationDelay: `${idx * 60}ms`,
                     }}
+                    onClick={() => navigate(`/product/${product._id}`)}
                     onMouseEnter={() => handleCardEnter(product._id, imgs.length)}
                     onMouseLeave={() => handleCardLeave(product._id)}
                   >
@@ -446,19 +471,12 @@ export default function Home() {
 
                     {/* Image block */}
                     <div className="relative overflow-hidden" style={{ aspectRatio: '3/4' }}>
-                      {currentImg ? (
-                        <img
-                          src={currentImg}
-                          alt={product.title}
-                          className="card-img w-full h-full object-cover"
-                          onError={(e) => { e.target.style.display = 'none'; }}
-                        />
-                      ) : (
-                        <div
-                          className="w-full h-full"
-                          style={{ backgroundColor: dark ? '#1c1c1c' : '#f0ede6' }}
-                        />
-                      )}
+                      <img
+                        src={currentImg}
+                        alt={product.title}
+                        className="card-img w-full h-full object-cover"
+                        onError={(e) => { e.target.style.display = 'none'; }}
+                      />
 
                       {/* Gradient overlay */}
                       <div
@@ -491,6 +509,7 @@ export default function Home() {
                       {/* Wishlist */}
                       <button
                         aria-label="Add to wishlist"
+                        onClick={(e) => e.stopPropagation()}
                         className="wishlist-btn absolute top-3 right-3 z-10 w-8 h-8 rounded-full flex items-center justify-center border"
                         style={{
                           backgroundColor: dark ? 'rgba(18,19,23,0.72)' : 'rgba(251,249,246,0.88)',
@@ -547,6 +566,7 @@ export default function Home() {
 
                           <button
                             aria-label={`Add ${product.title} to cart`}
+                            onClick={(e) => e.stopPropagation()}
                             className="add-cart-btn flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-semibold tracking-[0.06em] cursor-pointer border-none"
                             style={{
                               backgroundColor: isHovered ? tk.golden : `${tk.golden}1a`,

@@ -5,7 +5,8 @@ const productSlice = createSlice ({
     initialState : {
 
         sellerProducts : [] ,
-        products : []
+        products : [] ,
+        currentProduct : null
 
     } ,
     reducers : {
@@ -15,12 +16,16 @@ const productSlice = createSlice ({
         } ,
         setProducts : (state , action) => {
             state.products = action.payload
+        } 
+        ,
+        setCurrentProduct : (state , action) => {
+            state.currentProduct = action.payload
         }
 
     }
 })
 
 
-export const {setSellerProducts , setProducts} = productSlice.actions 
+export const {setSellerProducts , setProducts , setCurrentProduct} = productSlice.actions 
 
 export default productSlice.reducer
