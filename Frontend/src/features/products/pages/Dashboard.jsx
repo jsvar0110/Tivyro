@@ -121,7 +121,7 @@ const ImageCarousel = ({ images, title, isDark }) => {
 /* ── Product Card ── */
 const ProductCard = ({ product, isDark }) => {
   const navigate = useNavigate();
-  const { price, title, description, images, createdAt } = product;
+  const { _id , price, title, description, images, createdAt } = product;
 
   const formattedDate = new Date(createdAt).toLocaleDateString('en-IN', {
     day: 'numeric', month: 'short', year: 'numeric'
@@ -147,6 +147,9 @@ const ProductCard = ({ product, isDark }) => {
         border: `1px solid ${cardBorder}`,
         boxShadow: isDark ? '0 2px 12px rgba(0,0,0,0.35)' : '0 1px 6px rgba(180,165,140,0.08)',
       }}
+
+      onClick={() => navigate(`/seller/product/${_id}`)}
+
       onMouseEnter={e => {
         e.currentTarget.style.boxShadow = isDark
           ? '0 8px 32px rgba(0,0,0,0.55), 0 0 0 1px rgba(201,169,110,0.18)'

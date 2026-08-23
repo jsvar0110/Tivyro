@@ -18,9 +18,9 @@ const productSlice = createSlice ({
             state.products = action.payload
         } 
         ,
-        setCurrentProduct : (state , action) => {
-            state.currentProduct = action.payload
-        }
+        // setCurrentProduct : (state , action) => {
+        //     state.currentProduct = action.payload
+        // }
 
     }
 })
