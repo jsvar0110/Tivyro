@@ -106,7 +106,7 @@ export async function addProductVariant(req , res) {
     
     const productId = req.params.productId
 
-    const product = await productModel.findById({
+    const product = await productModel.findOne({
         _id : productId ,
         seller : req.user._id
     })
