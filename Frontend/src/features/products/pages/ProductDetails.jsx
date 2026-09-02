@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useParams, Link, useNavigate } from 'react-router';
 import { useProduct } from '../hooks/useProduct';
 
@@ -6,6 +6,7 @@ const ProductDetail = () => {
     const { productId } = useParams();
     const [ product, setProduct ] = useState(null);
     const [ selectedImage, setSelectedImage ] = useState(0);
+    const [ selectedVariantIndex, setSelectedVariantIndex ] = useState(null);
     const navigate = useNavigate();
     const { handleGetProductById } = useProduct();
 
@@ -23,7 +24,44 @@ const ProductDetail = () => {
         fetchProductDetails();
     }, [ productId ]);
 
+    // Reset image selection when variant changes
+    useEffect(() => {
+        setSelectedImage(0);
+    }, [ selectedVariantIndex ]);
+
     console.log("Product Details:", product); // Debugging line to check the product data
+
+    // Compute the active display values by merging selected variant over main product
+    const activeProduct = useMemo(() => {
+        if (!product) return null;
+
+        // No variant selected — use main product as-is
+        if (selectedVariantIndex === null || !product.variants?.length) {
+            return {
+                title: product.title,
+                description: product.description,
+                price: product.price,
+                images: product.images && product.images.length > 0 ? product.images : [ { url: '/Tivyro.png' } ],
+                stock: product.stock,
+                variantId: null,
+            };
+        }
+
+        const variant = product.variants[selectedVariantIndex];
+        if (!variant) return null;
+
+        // Merge: variant value wins if present, else fall back to main product
+        return {
+            title: product.title,                                           // always from product
+            description: product.description,                               // always from product
+            price: variant.price?.amount != null ? variant.price : product.price,
+            images: variant.images && variant.images.length > 0
+                ? variant.images
+                : (product.images && product.images.length > 0 ? product.images : [ { url: '/Tivyro.png' } ]),
+            stock: variant.stock ?? product.stock,
+            variantId: variant._id,
+        };
+    }, [ product, selectedVariantIndex ]);
 
     if (!product) {
         return (
@@ -35,7 +73,8 @@ const ProductDetail = () => {
         );
     }
 
-    const images = product.images && product.images.length > 0 ? product.images : [ { url: '/Tivyro.png' } ];
+    const images = activeProduct.images;
+    const isOutOfStock = activeProduct.stock !== undefined && activeProduct.stock !== null && activeProduct.stock <= 0;
 
     return (
         <>
@@ -140,7 +179,7 @@ const ProductDetail = () => {
                                     className="text-sm uppercase tracking-[0.2em] font-medium"
                                     style={{ color: '#1b1c1a' }}
                                 >
-                                    {product.price?.currency} {product.price?.amount?.toLocaleString()}
+                                    {activeProduct.price?.currency} {activeProduct.price?.amount?.toLocaleString()}
                                 </span>
                             </div>
 
@@ -155,40 +194,121 @@ const ProductDetail = () => {
                                 </p>
                             </div>
 
+                            {/* ── Variant Selector ── */}
+                            {product.variants && product.variants.length > 0 && (
+                                <div className="mb-10">
+                                    <h3
+                                        className="text-[10px] uppercase tracking-[0.24em] font-medium mb-5"
+                                        style={{ color: '#C9A96E' }}
+                                    >
+                                        Variants
+                                    </h3>
+
+                                    <div className="flex flex-wrap gap-3">
+                                        {product.variants.map((variant, idx) => {
+                                            const isActive = selectedVariantIndex === idx;
+                                            const attrEntries = variant.attributes
+                                                ? Object.entries(variant.attributes)
+                                                : [];
+                                            const label = attrEntries.length > 0
+                                                ? attrEntries.map(([ k, v ]) => `${k}: ${v}`).join(' · ')
+                                                : `Variant ${idx + 1}`;
+
+                                            return (
+                                                <button
+                                                    key={variant._id || idx}
+                                                    onClick={() =>
+                                                        setSelectedVariantIndex(prev => prev === idx ? null : idx)
+                                                    }
+                                                    className="px-5 py-3 text-[10px] uppercase tracking-[0.15em] font-medium transition-all duration-300 border"
+                                                    style={{
+                                                        backgroundColor: isActive ? '#1b1c1a' : 'transparent',
+                                                        borderColor: isActive ? '#1b1c1a' : '#d0c5b5',
+                                                        color: isActive ? '#fbf9f6' : '#7A6E63',
+                                                    }}
+                                                    onMouseEnter={e => {
+                                                        if (!isActive) {
+                                                            e.currentTarget.style.borderColor = '#C9A96E';
+                                                            e.currentTarget.style.color = '#1b1c1a';
+                                                        }
+                                                    }}
+                                                    onMouseLeave={e => {
+                                                        if (!isActive) {
+                                                            e.currentTarget.style.borderColor = '#d0c5b5';
+                                                            e.currentTarget.style.color = '#7A6E63';
+                                                        }
+                                                    }}
+                                                >
+                                                    {label}
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+
+                                    {/* Stock indicator for selected variant */}
+                                    {selectedVariantIndex !== null && activeProduct.stock !== undefined && (
+                                        <p
+                                            className="mt-4 text-[10px] uppercase tracking-[0.15em] font-medium"
+                                            style={{
+                                                color: isOutOfStock ? '#c0392b' : '#7A6E63',
+                                            }}
+                                        >
+                                            {isOutOfStock
+                                                ? 'Out of stock'
+                                                : `${activeProduct.stock} in stock`}
+                                        </p>
+                                    )}
+                                </div>
+                            )}
+
                             {/* Actions */}
                             <div className="flex flex-col gap-4 mt-auto">
                                 <button
                                     className="w-full py-4 text-[11px] uppercase tracking-[0.25em] font-medium transition-all duration-300"
+                                    disabled={isOutOfStock}
                                     style={{
-                                        backgroundColor: '#1b1c1a',
+                                        backgroundColor: isOutOfStock ? '#B5ADA3' : '#1b1c1a',
                                         color: '#fbf9f6',
-                                        fontFamily: "'Inter', sans-serif"
+                                        fontFamily: "'Inter', sans-serif",
+                                        cursor: isOutOfStock ? 'not-allowed' : 'pointer',
+                                        opacity: isOutOfStock ? 0.6 : 1,
                                     }}
                                     onMouseEnter={e => {
-                                        e.currentTarget.style.backgroundColor = '#C9A96E';
-                                        e.currentTarget.style.color = '#1b1c1a';
+                                        if (!isOutOfStock) {
+                                            e.currentTarget.style.backgroundColor = '#C9A96E';
+                                            e.currentTarget.style.color = '#1b1c1a';
+                                        }
                                     }}
                                     onMouseLeave={e => {
-                                        e.currentTarget.style.backgroundColor = '#1b1c1a';
-                                        e.currentTarget.style.color = '#fbf9f6';
+                                        if (!isOutOfStock) {
+                                            e.currentTarget.style.backgroundColor = '#1b1c1a';
+                                            e.currentTarget.style.color = '#fbf9f6';
+                                        }
                                     }}
                                 >
-                                    Add to Cart
+                                    {isOutOfStock ? 'Out of Stock' : 'Add to Cart'}
                                 </button>
 
                                 <button
                                     className="w-full py-4 text-[11px] uppercase tracking-[0.25em] font-medium transition-all duration-300 border"
+                                    disabled={isOutOfStock}
                                     style={{
                                         backgroundColor: 'transparent',
-                                        borderColor: '#d0c5b5',
-                                        color: '#1b1c1a',
-                                        fontFamily: "'Inter', sans-serif"
+                                        borderColor: isOutOfStock ? '#e4e2df' : '#d0c5b5',
+                                        color: isOutOfStock ? '#B5ADA3' : '#1b1c1a',
+                                        fontFamily: "'Inter', sans-serif",
+                                        cursor: isOutOfStock ? 'not-allowed' : 'pointer',
+                                        opacity: isOutOfStock ? 0.6 : 1,
                                     }}
                                     onMouseEnter={e => {
-                                        e.currentTarget.style.borderColor = '#C9A96E';
+                                        if (!isOutOfStock) {
+                                            e.currentTarget.style.borderColor = '#C9A96E';
+                                        }
                                     }}
                                     onMouseLeave={e => {
-                                        e.currentTarget.style.borderColor = '#d0c5b5';
+                                        if (!isOutOfStock) {
+                                            e.currentTarget.style.borderColor = '#d0c5b5';
+                                        }
                                     }}
                                 >
                                     Buy Now
