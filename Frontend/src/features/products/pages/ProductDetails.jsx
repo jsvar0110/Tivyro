@@ -4,9 +4,10 @@ import { useProduct } from '../hooks/useProduct';
 
 const ProductDetail = () => {
     const { productId } = useParams();
-    const [ product, setProduct ] = useState(null);
-    const [ selectedImage, setSelectedImage ] = useState(0);
-    const [ selectedVariantIndex, setSelectedVariantIndex ] = useState(null);
+    const [product, setProduct] = useState(null);
+    const [selectedImage, setSelectedImage] = useState(0);
+
+    const [selectedAttributes, setSelectedAttributes] = useState({});
     const navigate = useNavigate();
     const { handleGetProductById } = useProduct();
 
@@ -20,14 +21,35 @@ const ProductDetail = () => {
         }
     }
 
+    // useEffect(() => {
+    //     if (product?.variants?.length > 0) {
+    //         setSelectedAttributes(product.variants[0].attributes || {});   // BUG
+    //     }
+    // }, [product]);
+
+    const availableAttributes = useMemo(() => {
+        if (!product?.variants) return {};
+        const attrs = {};
+        product.variants.forEach(variant => {
+            if (variant.attributes) {
+                Object.entries(variant.attributes).forEach(([key, value]) => {
+                    if (!attrs[key]) attrs[key] = new Set();
+                    attrs[key].add(value);
+                });
+            }
+        });
+        Object.keys(attrs).forEach(key => { attrs[key] = Array.from(attrs[key]); });
+        return attrs;
+    }, [product]);
+
     useEffect(() => {
         fetchProductDetails();
-    }, [ productId ]);
+    }, [productId]);
 
     // Reset image selection when variant changes
     useEffect(() => {
         setSelectedImage(0);
-    }, [ selectedVariantIndex ]);
+    }, [selectedAttributes]);
 
     console.log("Product Details:", product); // Debugging line to check the product data
 
@@ -36,18 +58,25 @@ const ProductDetail = () => {
         if (!product) return null;
 
         // No variant selected — use main product as-is
-        if (selectedVariantIndex === null || !product.variants?.length) {
+        // new
+        if (!product.variants?.length || Object.keys(selectedAttributes).length === 0) {
             return {
                 title: product.title,
                 description: product.description,
                 price: product.price,
-                images: product.images && product.images.length > 0 ? product.images : [ { url: '/Tivyro.png' } ],
+                images: product.images && product.images.length > 0 ? product.images : [{ url: '/Tivyro.png' }],
                 stock: product.stock,
                 variantId: null,
             };
         }
 
-        const variant = product.variants[selectedVariantIndex];
+        const variant = product.variants.find(v => {
+            if (!v.attributes) return false;
+            const vKeys = Object.keys(v.attributes);
+            const sKeys = Object.keys(selectedAttributes);
+            return vKeys.length === sKeys.length &&
+                vKeys.every(k => v.attributes[k] === selectedAttributes[k]);
+        });
         if (!variant) return null;
 
         // Merge: variant value wins if present, else fall back to main product
@@ -57,13 +86,34 @@ const ProductDetail = () => {
             price: variant.price?.amount != null ? variant.price : product.price,
             images: variant.images && variant.images.length > 0
                 ? variant.images
-                : (product.images && product.images.length > 0 ? product.images : [ { url: '/Tivyro.png' } ]),
+                : (product.images && product.images.length > 0 ? product.images : [{ url: '/Tivyro.png' }]),
             stock: variant.stock ?? product.stock,
             variantId: variant._id,
         };
-    }, [ product, selectedVariantIndex ]);
+    }, [product, selectedAttributes]);
 
-    if (!product) {
+    // new
+    const handleAttributeChange = (attrName, value) => {
+        // clicking the already-selected value clears selection → back to base product
+        if (selectedAttributes[attrName] === value) {
+            setSelectedAttributes({});
+            return;
+        }
+        const newAttrs = { ...selectedAttributes, [attrName]: value };
+        const exactMatch = product.variants.find(v => {
+            const vAttrs = v.attributes || {};
+            return Object.keys(newAttrs).every(k => newAttrs[k] === vAttrs[k]) &&
+                Object.keys(vAttrs).every(k => newAttrs[k] === vAttrs[k]);
+        });
+        if (exactMatch) {
+            setSelectedAttributes(exactMatch.attributes);
+        } else {
+            const fallback = product.variants.find(v => v.attributes && v.attributes[attrName] === value);
+            setSelectedAttributes(fallback ? fallback.attributes : newAttrs);
+        }
+    };
+
+    if (!product || !activeProduct) {
         return (
             <div className="min-h-screen flex items-center justify-center selection:bg-[#C9A96E]/30" style={{ backgroundColor: '#fbf9f6' }}>
                 <p style={{ fontFamily: "'Inter', sans-serif", color: '#B5ADA3' }} className="text-[10px] uppercase tracking-[0.2em] font-medium animate-pulse">
@@ -132,7 +182,7 @@ const ProductDetail = () => {
                             {/* Main Image */}
                             <div className="relative w-full aspect-4/5 overflow-hidden group" style={{ backgroundColor: '#f5f3f0' }}>
                                 <img
-                                    src={images[ selectedImage ]?.url || images[ 0 ].url}
+                                    src={images[selectedImage]?.url || images[0].url}
                                     alt={product.title}
                                     className="w-full h-full object-cover transition-opacity duration-500"
 
@@ -204,49 +254,30 @@ const ProductDetail = () => {
                                         Variants
                                     </h3>
 
-                                    <div className="flex flex-wrap gap-3">
-                                        {product.variants.map((variant, idx) => {
-                                            const isActive = selectedVariantIndex === idx;
-                                            const attrEntries = variant.attributes
-                                                ? Object.entries(variant.attributes)
-                                                : [];
-                                            const label = attrEntries.length > 0
-                                                ? attrEntries.map(([ k, v ]) => `${k}: ${v}`).join(' · ')
-                                                : `Variant ${idx + 1}`;
-
-                                            return (
-                                                <button
-                                                    key={variant._id || idx}
-                                                    onClick={() =>
-                                                        setSelectedVariantIndex(prev => prev === idx ? null : idx)
-                                                    }
-                                                    className="px-5 py-3 text-[10px] uppercase tracking-[0.15em] font-medium transition-all duration-300 border"
-                                                    style={{
-                                                        backgroundColor: isActive ? '#1b1c1a' : 'transparent',
-                                                        borderColor: isActive ? '#1b1c1a' : '#d0c5b5',
-                                                        color: isActive ? '#fbf9f6' : '#7A6E63',
-                                                    }}
-                                                    onMouseEnter={e => {
-                                                        if (!isActive) {
-                                                            e.currentTarget.style.borderColor = '#C9A96E';
-                                                            e.currentTarget.style.color = '#1b1c1a';
-                                                        }
-                                                    }}
-                                                    onMouseLeave={e => {
-                                                        if (!isActive) {
-                                                            e.currentTarget.style.borderColor = '#d0c5b5';
-                                                            e.currentTarget.style.color = '#7A6E63';
-                                                        }
-                                                    }}
-                                                >
-                                                    {label}
-                                                </button>
-                                            );
-                                        })}
-                                    </div>
+                                    {Object.entries(availableAttributes).map(([attrName, values]) => (
+                                        <div key={attrName} className="mb-6">
+                                            <h3 className="text-[10px] uppercase tracking-[0.24em] font-medium mb-3" style={{ color: '#C9A96E' }}>
+                                                {attrName}
+                                            </h3>
+                                            <div className="flex flex-wrap gap-2">
+                                                {values.map(val => {
+                                                    const isSelected = selectedAttributes[attrName] === val;
+                                                    return (
+                                                        <button
+                                                            key={val}
+                                                            onClick={() => handleAttributeChange(attrName, val)}
+                                                            className={`px-4 py-2 text-[11px] uppercase tracking-[0.15em] font-medium transition-all duration-300 border ${isSelected ? 'border-[#1b1c1a] bg-[#1b1c1a] text-[#fbf9f6]' : 'border-[#d0c5b5] text-[#1b1c1a] hover:border-[#1b1c1a]'}`}
+                                                        >
+                                                            {val}
+                                                        </button>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+                                    ))}
 
                                     {/* Stock indicator for selected variant */}
-                                    {selectedVariantIndex !== null && activeProduct.stock !== undefined && (
+                                    {selectedAttributes !== null && activeProduct.stock !== undefined && (
                                         <p
                                             className="mt-4 text-[10px] uppercase tracking-[0.15em] font-medium"
                                             style={{

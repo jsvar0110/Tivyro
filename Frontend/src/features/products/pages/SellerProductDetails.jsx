@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router';
 import { useProduct } from '../hooks/useProduct.js';
 
 const CURRENCIES = ['INR', 'USD', 'EUR', 'GBP', 'JPY'];
+const SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
 
 const currencySymbol = (c) =>
   c === 'INR' ? '₹' : c === 'USD' ? '$' : c === 'EUR' ? '€' : c === 'GBP' ? '£' : c === 'JPY' ? '¥' : c;
@@ -170,6 +171,7 @@ const SellerProductDetails = () => {
 
   const [attrKey, setAttrKey] = useState('');
   const [attrValue, setAttrValue] = useState('');
+  const [selectedSize, setSelectedSize] = useState(''); //Size
   const [attributes, setAttributes] = useState({});
   const [variantImages, setVariantImages] = useState([]);
   const [isDragging, setIsDragging] = useState(false);
@@ -212,8 +214,25 @@ const SellerProductDetails = () => {
     setVariantImages(prev => { const updated = [...prev]; URL.revokeObjectURL(updated[index].preview); updated.splice(index, 1); return updated; });
   };
 
+
+
+  const toggleSize = (size) => {
+    if (selectedSize === size) {
+      setSelectedSize('');
+      setAttributes(prev => { const next = { ...prev }; delete next.Size; return next; });
+    } else {
+      setSelectedSize(size);
+      setAttributes(prev => ({ ...prev, Size: size }));
+    }
+  };
+
+
   const addAttribute = () => {
     if (!attrKey.trim() || !attrValue.trim()) return;
+    if (attrKey.trim().toLowerCase() === 'size') {
+      alert('Use the Size selector above instead.');
+      return;
+    }
     setAttributes(prev => ({ ...prev, [attrKey.trim()]: attrValue.trim() }));
     setAttrKey(''); setAttrValue('');
   };
@@ -243,6 +262,8 @@ const SellerProductDetails = () => {
 
     setProduct(prev => ({ ...prev, variants: [...(prev?.variants ?? []), newVariant] }))
     setAttributes({});
+    setAttributes({});
+    setSelectedSize('');   // NEW
     setVariantImages([]);
     setVariantPrice('');
     setVariantCurrency('INR');
@@ -389,6 +410,33 @@ const SellerProductDetails = () => {
                   <p className="text-[10px] uppercase tracking-[0.2em] mt-1" style={{ color: subLabelColor }}>Define attributes, images, price & stock</p>
                 </div>
                 <form onSubmit={handleSubmitVariant} className="flex flex-col gap-6">
+
+
+                  {/* Size */}
+                  <div className="flex flex-col gap-3">
+                    <label className="text-[10px] uppercase tracking-[0.2em] font-medium" style={{ color: labelColor }}>Size</label>
+                    <div className="flex flex-wrap gap-2">
+                      {SIZES.map(size => {
+                        const isSelected = selectedSize === size;
+                        return (
+                          <button
+                            key={size}
+                            type="button"
+                            onClick={() => toggleSize(size)}
+                            className="w-10 h-10 flex items-center justify-center text-xs uppercase tracking-wider transition-all duration-200"
+                            style={{
+                              border: `1px solid ${isSelected ? '#C9A96E' : inputBorder}`,
+                              backgroundColor: isSelected ? '#C9A96E' : 'transparent',
+                              color: isSelected ? '#12110e' : labelColor,
+                            }}
+                          >
+                            {size}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
 
                   {/* Attributes */}
                   <div className="flex flex-col gap-3">
