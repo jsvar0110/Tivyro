@@ -2,7 +2,7 @@ import { addItem } from "../service/cart.api";
 import {useDispatch} from "react-redux"
 import { addItem as addItemToCart } from "../state/cart.slice";
 
-export const addToCart = () =>{
+export const useCart = () =>{
 
     const dispatch = useDispatch()
 
