@@ -3,8 +3,9 @@ import { useSelector } from 'react-redux'
 import { useCart } from '../hook/useCart.js'
 import { Link, useNavigate } from 'react-router'
 
+
 const Cart = () => {
-    const cartItems = useSelector(state => state.cart.items) || []
+    const cart = useSelector(state => state.cart) || []
     const { handleGetCart, handleIncrementCartItem } = useCart()
     const navigate = useNavigate()
 
@@ -16,15 +17,18 @@ const Cart = () => {
         handleGetCart()
     }, [])
 
-    useEffect(() => {
-        if (cartItems.length) {
-            const initial = {}
-            cartItems.forEach(item => {
-                initial[item._id] = item.quantity ?? 1
-            })
-            setQuantities(initial)
-        }
-    }, [cartItems])
+    // useEffect(() => {
+    //     if (cartItems.length) {
+    //         const initial = {}
+    //         cartItems.forEach(item => {
+    //             initial[item._id] = item.quantity ?? 1
+    //         })
+    //         setQuantities(initial)
+    //     }
+    // }, [cartItems])
+
+    console.log(cart)
+
 
     const changeQty = (id, delta) => {
         setQuantities(prev => ({
@@ -35,7 +39,7 @@ const Cart = () => {
 
     const getVariantDetails = (product, variantId) => {
         if (!product?.variants || !variantId) return null
-        return product.variants.find(v => v._id === variantId) ?? null
+        return product.variants
     }
 
     const getDisplayImage = (product, variant) => {
@@ -48,14 +52,14 @@ const Cart = () => {
         `${currency === 'INR' ? '₹' : `${currency} `}${Number(amount ?? 0).toLocaleString('en-IN')}`
 
     // Keep the first code's total calculation.
-    const subtotal = cartItems.reduce((sum, item) => {
-        const qty = quantities[item._id] ?? item.quantity ?? 1
-        return sum + (item.price?.amount ?? 0) * qty
-    }, 0)
+    // const subtotal = cartItems.reduce((sum, item) => {
+    //     const qty = quantities[item._id] ?? item.quantity ?? 1
+    //     return sum + (item.price?.amount ?? 0) * qty
+    // }, 0)
 
-    const freeShippingThreshold = 15000
-    const shippingFree = subtotal >= freeShippingThreshold
-    const totalPieces = cartItems.length
+    // const freeShippingThreshold = 15000
+    // const shippingFree = subtotal >= freeShippingThreshold
+    // const totalPieces = cartItems.length
 
     return (
         <div className="bg-surface text-on-surface antialiased min-h-screen flex flex-col selection:bg-primary-container selection:text-on-primary-container">
@@ -98,7 +102,7 @@ const Cart = () => {
 
             {/* Main Content Canvas */}
             <main className="flex-1 w-full max-w-[1300px] mx-auto pt-16 lg:pt-28 pb-stack-lg px-6 md:px-container-padding">
-                {cartItems.length === 0 ? (
+                {!cart?.items?.length ? (
                     <div className="min-h-[60vh] flex flex-col items-center justify-center text-center">
                         <div className="font-label-caps text-label-caps tracking-widest text-primary uppercase mb-3">
                             Couture Private Vault
@@ -131,7 +135,7 @@ const Cart = () => {
                                 <h1 className="font-headline-md text-headline-md md:font-display-lg md:text-display-lg text-on-surface tracking-tight">
                                     Shopping Bag
                                     <span className="font-body-lg text-body-lg text-outline font-normal align-middle ml-2">
-                                        ({totalPieces} {totalPieces === 1 ? 'piece' : 'pieces'} reserved)
+                                        ({cart?.items?.length} {cart?.items?.length === 1 ? 'piece' : 'pieces'} reserved)
                                     </span>
                                 </h1>
                             </div>
@@ -177,7 +181,7 @@ const Cart = () => {
 
                                 {/* Cart Items List Container */}
                                 <div className="divide-y divide-outline-variant/40 border border-outline-variant bg-surface-container-low">
-                                    {cartItems.map(item => {
+                                    {cart.items.map(item => {
                                         const product = item.product
                                         const variantId = item.variant
                                         const variant = getVariantDetails(product, variantId) || product?.variants?.[0] || {}
@@ -433,16 +437,16 @@ const Cart = () => {
                                     {/* Financial Line Items */}
                                     <div className="flex flex-col gap-3.5 text-body-md font-body-md">
                                         <div className="flex justify-between items-center text-on-surface-variant">
-                                            <span>Subtotal ({cartItems.length} items)</span>
+                                            <span>Subtotal ({cart.items.length} items)</span>
                                             <span className="text-on-surface font-medium">
-                                                {formatCurrency(subtotal)}
+                                                {formatCurrency(cart.totalPrice)}
                                             </span>
                                         </div>
 
                                         <div className="flex justify-between items-center text-on-surface-variant">
                                             <span>Estimated Shipping</span>
                                             <span className="text-primary font-label-caps text-label-caps">
-                                                {shippingFree ? 'COMPLIMENTARY' : 'CALCULATED AT CHECKOUT'}
+                                                {cart.totalPrice >= 15000 ? 'COMPLIMENTARY' : 'Complimentary over INR 15,000'}
                                             </span>
                                         </div>
 
@@ -467,7 +471,7 @@ const Cart = () => {
 
                                                 <div className="text-right">
                                                     <span className="font-headline-md text-headline-md text-primary font-normal tracking-tight">
-                                                        {formatCurrency(subtotal)}
+                                                        {formatCurrency(cart.totalPrice)}
                                                     </span>
                                                 </div>
                                             </div>
