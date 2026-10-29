@@ -1,6 +1,7 @@
-import { addItem , getCart , incrementCartItemApi } from "../service/cart.api";
+import { addItem , getCart , incrementCartItemApi , createOrder , verifyCartOrder } from "../service/cart.api";
 import {useDispatch} from "react-redux"
 import { setCart , incrementCartItem} from "../state/cart.slice";
+
 
 export const useCart = () =>{
 
@@ -30,7 +31,19 @@ export const useCart = () =>{
 
     }
 
+    async function handleCreateCartOrder() {
+        const data = await createOrder()
+        return data.order
+    }
+
+    async function handleVerifyCartOrder({ razorpay_order_id, razorpay_payment_id, razorpay_signature }) {
+
+        const data = await verifyCartOrder({razorpay_order_id, razorpay_payment_id, razorpay_signature})
+        return data.success
+
+    }
 
 
-    return {handleAddItem , handleGetCart , handleIncrementCartItem}
+
+    return {handleAddItem , handleGetCart , handleIncrementCartItem , handleCreateCartOrder , handleVerifyCartOrder}
 }

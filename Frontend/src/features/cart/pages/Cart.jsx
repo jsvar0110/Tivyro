@@ -2,12 +2,15 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useCart } from '../hook/useCart.js'
 import { Link, useNavigate } from 'react-router'
+import {useRazorpay} from "react-razorpay"
 
 
 const Cart = () => {
     const cart = useSelector(state => state.cart) || []
-    const { handleGetCart, handleIncrementCartItem } = useCart()
+    const { handleGetCart, handleIncrementCartItem , handleCreateCartOrder , handleVerifyCartOrder } = useCart()
     const navigate = useNavigate()
+    const { error , isLoading , Razorpay} = useRazorpay()
+    const user = useSelector(state => state.user)
 
     // Keep the first code's local quantity handling.
     const [quantities, setQuantities] = useState({})
@@ -51,15 +54,36 @@ const Cart = () => {
     const formatCurrency = (amount, currency = 'INR') =>
         `${currency === 'INR' ? '₹' : `${currency} `}${Number(amount ?? 0).toLocaleString('en-IN')}`
 
-    // Keep the first code's total calculation.
-    // const subtotal = cartItems.reduce((sum, item) => {
-    //     const qty = quantities[item._id] ?? item.quantity ?? 1
-    //     return sum + (item.price?.amount ?? 0) * qty
-    // }, 0)
+    async function handleCheckout() {
+        const order = await handleCreateCartOrder()
 
-    // const freeShippingThreshold = 15000
-    // const shippingFree = subtotal >= freeShippingThreshold
-    // const totalPieces = cartItems.length
+        const options = {
+            key:import.meta.env.VITE_RAZORPAY_KEY_ID,
+            amount: order.amount, // Amount in paise
+            currency: order.currency,
+            name: "Tivyro",
+            description: "Test Transaction",
+            order_id: order.id, // Generate order_id on server
+            handler: async (response) => {
+
+                const isValid = await handleVerifyCartOrder(response)
+
+                if (isValid) {
+                    navigate(`/order-success?order_id=${response?.razorpay_order_id}`)
+                }
+            },
+            prefill: {
+                name: user?.fullname,
+                email: user?.email,
+                contact: user?.contact,
+            },
+            theme: {
+                color : "#3399cc",
+            },
+        }
+        const razorpayInstance = new Razorpay (options)
+        razorpayInstance.open();
+    }
 
     return (
         <div className="bg-surface text-on-surface antialiased min-h-screen flex flex-col selection:bg-primary-container selection:text-on-primary-container">
@@ -483,6 +507,7 @@ const Cart = () => {
                                         <button
                                             id="proceed-checkout"
                                             className="w-full py-4 px-6 bg-primary-container hover:bg-primary text-[#12110e] font-label-caps text-label-caps uppercase tracking-widest font-bold flex items-center justify-center gap-3 transition-all duration-200 active:scale-95 shadow-md group"
+                                            onClick={handleCheckout}
                                         >
                                             <span>Proceed to Checkout</span>
                                             <span className="material-symbols-outlined text-lg group-hover:translate-x-1 transition-transform">
