@@ -68,6 +68,7 @@ const CreateProduct = () => {
         description: '',
         priceAmount: '',
         priceCurrency: 'INR',
+        gender: '',
     });
     const [images, setImages] = useState([]);
     const [isDragging, setIsDragging] = useState(false);
@@ -75,17 +76,17 @@ const CreateProduct = () => {
     const fileInputRef = useRef(null);
 
     /* theme tokens */
-    const bg             = isDark ? '#12110e' : '#fbf9f6';
-    const headerColor    = isDark ? '#f0ede6' : '#1b1c1a';
-    const borderColor    = isDark ? '#2e2b25' : '#ebe8e3';
-    const backColor      = isDark ? '#6b6258' : '#B5ADA3';
-    const inputColor     = isDark ? '#e8e2d8' : '#1b1c1a';
-    const inputBorder    = isDark ? '#3a3528' : '#d0c5b5';
-    const labelColor     = isDark ? '#8a8070' : '#7A6E63';
-    const subLabelColor  = isDark ? '#6b6258' : '#B5ADA3';
-    const dropZoneBg     = isDark ? '#1a1814' : 'transparent';
+    const bg = isDark ? '#12110e' : '#fbf9f6';
+    const headerColor = isDark ? '#f0ede6' : '#1b1c1a';
+    const borderColor = isDark ? '#2e2b25' : '#ebe8e3';
+    const backColor = isDark ? '#6b6258' : '#B5ADA3';
+    const inputColor = isDark ? '#e8e2d8' : '#1b1c1a';
+    const inputBorder = isDark ? '#3a3528' : '#d0c5b5';
+    const labelColor = isDark ? '#8a8070' : '#7A6E63';
+    const subLabelColor = isDark ? '#6b6258' : '#B5ADA3';
+    const dropZoneBg = isDark ? '#1a1814' : 'transparent';
     const dropZoneBorder = isDark ? '#3a3528' : '#d0c5b5';
-    const optionBg       = isDark ? '#1a1814' : '#fbf9f6';
+    const optionBg = isDark ? '#1a1814' : '#fbf9f6';
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -108,7 +109,7 @@ const CreateProduct = () => {
         if (e.dataTransfer.files.length) addFiles(e.dataTransfer.files);
     }, [images]);
 
-    const handleDragOver  = (e) => { e.preventDefault(); setIsDragging(true); };
+    const handleDragOver = (e) => { e.preventDefault(); setIsDragging(true); };
     const handleDragLeave = () => setIsDragging(false);
 
     const removeImage = (index) => {
@@ -129,6 +130,7 @@ const CreateProduct = () => {
             data.append('description', formData.description);
             data.append('priceAmount', formData.priceAmount);
             data.append('priceCurrency', formData.priceCurrency);
+            data.append('gender', formData.gender);
             images.forEach(img => data.append('images', img.file));
             await handleCreateProduct(data);
             navigate('/');
@@ -142,7 +144,7 @@ const CreateProduct = () => {
     const inputClass = "w-full bg-transparent outline-none py-2.5 text-sm transition-colors duration-300";
     const makeInputStyle = () => ({ color: inputColor, borderBottom: `1px solid ${inputBorder}`, fontFamily: "'Inter', sans-serif" });
     const handleFocus = (e) => { e.target.style.borderBottomColor = '#C9A96E'; };
-    const handleBlur  = (e) => { e.target.style.borderBottomColor = inputBorder; };
+    const handleBlur = (e) => { e.target.style.borderBottomColor = inputBorder; };
 
     return (
         <>
@@ -223,6 +225,22 @@ const CreateProduct = () => {
                                         className={inputClass} style={makeInputStyle()}
                                         onFocus={handleFocus} onBlur={handleBlur}
                                     />
+                                </div>
+
+                                {/* Gender */}
+                                <div className="flex flex-col gap-1.5">
+                                    <label htmlFor="cp-gender" className="text-[10px] uppercase tracking-[0.2em] font-medium" style={{ color: labelColor }}>
+                                        Collection
+                                    </label>
+                                    <select
+                                        id="cp-gender" name="gender" value={formData.gender} onChange={handleChange} required
+                                        className="w-full bg-transparent outline-none py-2.5 text-sm cursor-pointer appearance-none transition-colors duration-300"
+                                        style={makeInputStyle()} onFocus={handleFocus} onBlur={handleBlur}
+                                    >
+                                        <option value="" disabled style={{ backgroundColor: optionBg, color: inputColor }}>Select Men or Women</option>
+                                        <option value="men" style={{ backgroundColor: optionBg, color: inputColor }}>Men</option>
+                                        <option value="women" style={{ backgroundColor: optionBg, color: inputColor }}>Women</option>
+                                    </select>
                                 </div>
 
                                 {/* Description */}

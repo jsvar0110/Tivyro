@@ -23,9 +23,9 @@ export async function getSellerProducts() {
 
 }
 
-export async function getAllProducts() {
+export async function getAllProducts(gender) {
 
-    const response = await productApiInstance.get('/')
+    const response = await productApiInstance.get('/', { params: { gender } })
 
     return response.data
 
@@ -48,11 +48,11 @@ export async function addProductVariant(productId, newProductVariant) {
     })
 
     formData.append("stock", newProductVariant.stock)
-    
+
     formData.append("priceAmount", newProductVariant.price?.amount ?? newProductVariant.price) /* Safely handles both {amount, currency} object and raw number formats */
-    
+
     formData.append("priceCurrency", newProductVariant.price?.currency ?? "INR") /* Sends selected currency to backend instead of assuming INR always */
-    
+
     formData.append("attributes", JSON.stringify(newProductVariant.attributes)) /* Formdata can only hold strings and files as values , It cant store Js objects or it wil give [object Object] */
 
 

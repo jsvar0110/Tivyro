@@ -1,22 +1,22 @@
-import { createProduct , getSellerProducts , getAllProducts , getProductById , addProductVariant} from '../service/product.api.js'
-import {useDispatch} from "react-redux"
-import { setSellerProducts  , setProducts , setCurrentProduct} from '../state/product.slice.js'
+import { createProduct, getSellerProducts, getAllProducts, getProductById, addProductVariant } from '../service/product.api.js'
+import { useDispatch } from "react-redux"
+import { setSellerProducts, setProducts, setCurrentProduct } from '../state/product.slice.js'
 
 
-export const useProduct = () =>{
+export const useProduct = () => {
 
     const dispatch = useDispatch()
 
     async function handleCreateProduct(formData) {
-        
-        const data = await createProduct(formData) 
 
-        return data.product 
+        const data = await createProduct(formData)
+
+        return data.product
 
     }
 
     async function handleGetSellerProduct() {
-        
+
         const data = await getSellerProducts()
 
         dispatch(setSellerProducts(data.products))
@@ -25,14 +25,16 @@ export const useProduct = () =>{
 
     }
 
-    async function handleGetAllProducts() {
-        const data = await getAllProducts()
-        
-        dispatch(setProducts(data.products))
+    async function handleGetAllProducts(gender) {
+        const data = await getAllProducts(gender)
+
+        if (!gender) dispatch(setProducts(data.products))
+
+        return data.products
     }
 
     async function handleGetProductById(productId) {
-        
+
         const data = await getProductById(productId)
 
         return data.product
@@ -40,14 +42,14 @@ export const useProduct = () =>{
     }
 
 
-    async function handleAddProductVariant(productId , newProductVariant) {
-       
-        const data = await addProductVariant(productId , newProductVariant)
+    async function handleAddProductVariant(productId, newProductVariant) {
+
+        const data = await addProductVariant(productId, newProductVariant)
 
         return data
 
     }
 
-    return { handleCreateProduct , handleGetSellerProduct , handleGetAllProducts , handleGetProductById , handleAddProductVariant }
+    return { handleCreateProduct, handleGetSellerProduct, handleGetAllProducts, handleGetProductById, handleAddProductVariant }
 
 }

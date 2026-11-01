@@ -10,6 +10,7 @@ import SellerProductDetails from "../features/products/pages/SellerProductDetail
 import Cart from "../features/cart/pages/Cart.jsx"
 import Applayout from "./Applayout.jsx"
 import OrderSuccess from "../features/cart/pages/OrderSuccess.jsx"
+import GenderCollection from "../features/products/pages/GenderCollection.jsx"
 
 export const routes = createBrowserRouter([
     {
@@ -29,7 +30,8 @@ export const routes = createBrowserRouter([
                 path: '/',
                 element: <Home />
             },
-
+            { path: '/men', element: <GenderCollection gender="men" /> },
+            { path: '/women', element: <GenderCollection gender="women" /> },
             {
                 path: '/product/:productId',
                 element: <ProductDetails />
@@ -39,9 +41,9 @@ export const routes = createBrowserRouter([
                 element: <Protected> <Cart /> </Protected>
             },
             {
-                path : '/order-success' ,
-                element : <OrderSuccess/>
-            } ,
+                path: '/order-success',
+                element: <OrderSuccess />
+            },
 
 
             {

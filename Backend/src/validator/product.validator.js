@@ -21,6 +21,7 @@ export const createProductValidator = [
     body("description").notEmpty().withMessage("Description is Required") ,
     body("priceAmount").isNumeric().withMessage("Price amout must be number") ,
     body("priceCurrency").notEmpty().withMessage("Price currency is required") , 
+    body("gender").isIn(["men" , "women"]).withMessage("Gender must be men or women") ,
 
     validateRequest
 ]

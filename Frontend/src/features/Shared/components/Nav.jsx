@@ -38,8 +38,8 @@ const Nav = () => {
             <header className="w-full sticky top-0 z-[100] flex items-center justify-between px-6 md:px-16 h-20 bg-white border-b border-gray-200" style={{ fontFamily: "'Inter', sans-serif" }}>
                 {/* LEFT: MEN + WOMEN only */}
                 <nav className="flex items-center gap-8">
-                    <Link to="/?category=men" className="text-black text-[11px] font-semibold tracking-widest uppercase border-b border-black pb-0.5 hover:text-gray-500 hover:border-gray-500 transition-colors no-underline">MEN</Link>
-                    <Link to="/?category=women" className="text-gray-600 text-[11px] font-semibold tracking-widest uppercase hover:text-black transition-colors no-underline">WOMEN</Link>
+                    <Link to="/men" className="text-black text-[11px] font-semibold tracking-widest uppercase border-b border-black pb-0.5 hover:text-gray-500 hover:border-gray-500 transition-colors no-underline">MEN</Link>
+                    <Link to="/women" className="text-gray-600 text-[11px] font-semibold tracking-widest uppercase hover:text-black transition-colors no-underline">WOMEN</Link>
                 </nav>
 
                 {/* CENTER: Brand logo */}

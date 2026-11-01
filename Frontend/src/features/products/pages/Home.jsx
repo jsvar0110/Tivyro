@@ -116,7 +116,7 @@ export default function Home() {
                   <h3 style={{ fontFamily: "'Bodoni Moda', serif", fontSize: '26px', fontWeight: '400', textTransform: 'uppercase', marginBottom: '8px' }}>MEN</h3>
                   <p style={{ fontSize: '13px', color: '#aaa', marginBottom: '24px' }}>Elevated everyday essentials.</p>
                 </div>
-                <Link to="/?category=men" style={{ fontSize: '11px', fontWeight: '600', letterSpacing: '0.18em', textTransform: 'uppercase', color: '#fff', borderBottom: '1px solid #fff', paddingBottom: '2px', textDecoration: 'none', alignSelf: 'flex-start' }}>
+                <Link to="/men" style={{ fontSize: '11px', fontWeight: '600', letterSpacing: '0.18em', textTransform: 'uppercase', color: '#fff', borderBottom: '1px solid #fff', paddingBottom: '2px', textDecoration: 'none', alignSelf: 'flex-start' }}>
                   SHOP MEN →
                 </Link>
               </div>
@@ -132,7 +132,7 @@ export default function Home() {
                   <h3 style={{ fontFamily: "'Bodoni Moda', serif", fontSize: '26px', fontWeight: '400', textTransform: 'uppercase', marginBottom: '8px' }}>WOMEN</h3>
                   <p style={{ fontSize: '13px', color: '#aaa', marginBottom: '24px' }}>Effortless style for every you.</p>
                 </div>
-                <Link to="/?category=women" style={{ fontSize: '11px', fontWeight: '600', letterSpacing: '0.18em', textTransform: 'uppercase', color: '#fff', borderBottom: '1px solid #fff', paddingBottom: '2px', textDecoration: 'none', alignSelf: 'flex-start' }}>
+                <Link to="/women" style={{ fontSize: '11px', fontWeight: '600', letterSpacing: '0.18em', textTransform: 'uppercase', color: '#fff', borderBottom: '1px solid #fff', paddingBottom: '2px', textDecoration: 'none', alignSelf: 'flex-start' }}>
                   SHOP WOMEN →
                 </Link>
               </div>

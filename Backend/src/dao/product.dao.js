@@ -1,11 +1,22 @@
-import productModel from "../models/product.model.js";
+import { menProductModel, womenProductModel } from "../models/product.model.js";
 
-export const stockOfVariant = async (productId , variantId) => {
+export const findProductById = async (productId, extraFilter = {}) => {
+    const filter = { _id: productId, ...extraFilter }
+    const [men, women] = await Promise.all([
+        menProductModel.findOne(filter),
+        womenProductModel.findOne(filter)
+    ])
+    return men || women
+}
 
-    const product = await productModel.findOne({
-        _id : productId , 
-        "variants._id" : variantId
-    })
+export const stockOfVariant = async (productId, variantId) => {
+
+    const product = await findProductById(
+        productId,
+        {
+            "variants._id": variantId
+
+        })
 
     const stock = product.variants.find(variant => variant._id.toString() === variantId).stock
 
