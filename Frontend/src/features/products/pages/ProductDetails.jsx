@@ -7,6 +7,7 @@ const ProductDetail = () => {
     const { productId } = useParams();
     const [product, setProduct] = useState(null);
     const [selectedImage, setSelectedImage] = useState(0);
+    const [cartMessage, setCartMessage] = useState('');
 
     const [selectedAttributes, setSelectedAttributes] = useState({});
     const navigate = useNavigate();
@@ -143,7 +144,7 @@ const ProductDetail = () => {
                 style={{ backgroundColor: '#fbf9f6', fontFamily: "'Inter', sans-serif" }}
             >
                 {/* ── Navbar ── */}
-                
+
 
                 <div className="max-w-7xl mx-auto px-8 lg:px-16 xl:px-24 pt-12 lg:pt-20">
                     <div className="flex flex-col lg:flex-row gap-12 lg:gap-24 items-start">
@@ -310,16 +311,31 @@ const ProductDetail = () => {
                                         }
                                     }}
 
-                                    onClick={() => {
-                                        handleAddItem({
-                                            productId: product._id,
-                                            variantId: activeProduct.variantId,
-                                        })
+                                    onClick={async () => {
+                                        if (!activeProduct.variantId) {
+                                            setCartMessage(product.variants?.length ? 'Please select a variant first' : 'This product has no variants yet')
+                                            return
+                                        }
+                                        try {
+                                            setCartMessage('')
+                                            await handleAddItem({
+                                                productId: product._id,
+                                                variantId: activeProduct.variantId,
+                                            })
+                                            setCartMessage('Added to cart')
+                                        } catch (err) {
+                                            setCartMessage(err.response?.data?.message || 'Could not add to cart')
+                                        }
                                     }}
                                 >
                                     {isOutOfStock ? 'Out of Stock' : 'Add to Cart'}
                                 </button>
 
+                                {cartMessage && (
+                                    <p className="text-[11px] uppercase tracking-[0.15em]" style={{ color: '#7A6E63' }}>
+                                        {cartMessage}
+                                    </p>
+                                )}
                                 <button
                                     className="w-full py-4 text-[11px] uppercase tracking-[0.25em] font-medium transition-all duration-300 border"
                                     disabled={isOutOfStock}

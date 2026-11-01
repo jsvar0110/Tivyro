@@ -47,3 +47,13 @@ export const verifyCartOrder = async({razorpay_order_id, razorpay_payment_id, ra
 
     return response.data
 }
+
+export const removeCartItemApi = async ({ productId , variantId }) => {
+    const response = await cartApiInstance.delete(`/item/${productId}/${variantId}`)
+    return response.data
+}
+
+export const clearCartApi = async () => {
+    const response = await cartApiInstance.delete("/")
+    return response.data
+}

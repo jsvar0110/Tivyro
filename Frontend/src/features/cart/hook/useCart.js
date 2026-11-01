@@ -1,32 +1,32 @@
-import { addItem , getCart , incrementCartItemApi , createOrder , verifyCartOrder } from "../service/cart.api";
-import {useDispatch} from "react-redux"
-import { setCart , incrementCartItem} from "../state/cart.slice";
+import { addItem , getCart , incrementCartItemApi , createOrder , verifyCartOrder , removeCartItemApi , clearCartApi } from "../service/cart.api";
+import { useDispatch } from "react-redux"
+import { setCart, incrementCartItem } from "../state/cart.slice";
 
 
-export const useCart = () =>{
+export const useCart = () => {
 
     const dispatch = useDispatch()
 
-    async function handleAddItem({productId , variantId}) {
-        const data = await addItem({productId , variantId})
+    async function handleAddItem({ productId, variantId }) {
+        const data = await addItem({ productId, variantId })
 
         return data
     }
 
 
     async function handleGetCart() {
-        
+
         const data = await getCart()
-        
+
         console.log(data)
         dispatch(setCart(data.cart))
 
     }
 
-    async function handleIncrementCartItem({productId , variantId}) {
+    async function handleIncrementCartItem({ productId, variantId }) {
 
-        await incrementCartItemApi({productId  , variantId})
-        dispatch(incrementCartItem({productId , variantId}))
+        await incrementCartItemApi({ productId, variantId })
+        dispatch(incrementCartItem({ productId, variantId }))
 
 
     }
@@ -38,12 +38,23 @@ export const useCart = () =>{
 
     async function handleVerifyCartOrder({ razorpay_order_id, razorpay_payment_id, razorpay_signature }) {
 
-        const data = await verifyCartOrder({razorpay_order_id, razorpay_payment_id, razorpay_signature})
+        const data = await verifyCartOrder({ razorpay_order_id, razorpay_payment_id, razorpay_signature })
         return data.success
 
     }
 
 
+    async function handleRemoveCartItem({ productId, variantId }) {
+        await removeCartItemApi({ productId, variantId })
+        await handleGetCart()
+    }
 
-    return {handleAddItem , handleGetCart , handleIncrementCartItem , handleCreateCartOrder , handleVerifyCartOrder}
+    async function handleClearCart() {
+        await clearCartApi()
+        await handleGetCart()
+    }
+
+
+
+    return { handleAddItem, handleGetCart, handleIncrementCartItem, handleCreateCartOrder, handleVerifyCartOrder, handleRemoveCartItem, handleClearCart }
 }

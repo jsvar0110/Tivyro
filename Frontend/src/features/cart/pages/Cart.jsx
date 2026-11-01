@@ -2,19 +2,21 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useCart } from '../hook/useCart.js'
 import { Link, useNavigate } from 'react-router'
-import {useRazorpay} from "react-razorpay"
+import { useRazorpay } from "react-razorpay"
 
 
 const Cart = () => {
     const cart = useSelector(state => state.cart) || []
-    const { handleGetCart, handleIncrementCartItem , handleCreateCartOrder , handleVerifyCartOrder } = useCart()
+    const { handleGetCart, handleIncrementCartItem, handleCreateCartOrder, handleVerifyCartOrder, handleRemoveCartItem, handleClearCart } = useCart()
     const navigate = useNavigate()
-    const { error , isLoading , Razorpay} = useRazorpay()
+    const { error, isLoading, Razorpay } = useRazorpay()
     const user = useSelector(state => state.user)
 
     // Keep the first code's local quantity handling.
     const [quantities, setQuantities] = useState({})
     const [isPromoOpen, setIsPromoOpen] = useState(false)
+    const [isClearOpen, setIsClearOpen] = useState(false)
+    const [isClearing, setIsClearing] = useState(false)
 
     useEffect(() => {
         handleGetCart()
@@ -40,6 +42,19 @@ const Cart = () => {
         }))
     }
 
+
+    const confirmClear = async () => {
+        setIsClearing(true)
+        try {
+            await handleClearCart()
+            setIsClearOpen(false)
+        } catch (err) {
+            console.error('Failed to clear cart', err)
+        } finally {
+            setIsClearing(false)
+        }
+    }
+
     const getVariantDetails = (product, variantId) => {
         if (!product?.variants || !variantId) return null
         return product.variants
@@ -58,7 +73,7 @@ const Cart = () => {
         const order = await handleCreateCartOrder()
 
         const options = {
-            key:import.meta.env.VITE_RAZORPAY_KEY_ID,
+            key: import.meta.env.VITE_RAZORPAY_KEY_ID,
             amount: order.amount, // Amount in paise
             currency: order.currency,
             name: "Tivyro",
@@ -78,10 +93,10 @@ const Cart = () => {
                 contact: user?.contact,
             },
             theme: {
-                color : "#3399cc",
+                color: "#3399cc",
             },
         }
-        const razorpayInstance = new Razorpay (options)
+        const razorpayInstance = new Razorpay(options)
         razorpayInstance.open();
     }
 
@@ -124,6 +139,34 @@ const Cart = () => {
                 </div>
             </nav>
 
+
+            {/* Clear cart confirmation */}
+            {isClearOpen && (
+                <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/50 px-6">
+                    <div className="bg-surface-container-low border border-outline-variant max-w-md w-full p-8">
+                        <h3 className="font-title-lg text-title-lg text-on-surface">Clear your bag?</h3>
+                        <p className="font-body-md text-body-md text-on-surface-variant mt-2">
+                            All items will be removed from your cart. This can't be undone.
+                        </p>
+                        <div className="flex justify-end gap-3 mt-6">
+                            <button
+                                onClick={() => setIsClearOpen(false)}
+                                className="px-5 py-2 border border-outline-variant text-on-surface-variant uppercase tracking-widest text-xs hover:text-primary transition-colors"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={confirmClear}
+                                disabled={isClearing}
+                                className="px-5 py-2 bg-error text-white uppercase tracking-widest text-xs disabled:opacity-50"
+                            >
+                                {isClearing ? 'Clearing…' : 'Yes, clear'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* Main Content Canvas */}
             <main className="flex-1 w-full max-w-[1300px] mx-auto pt-16 lg:pt-28 pb-stack-lg px-6 md:px-container-padding">
                 {!cart?.items?.length ? (
@@ -164,9 +207,19 @@ const Cart = () => {
                                 </h1>
                             </div>
 
+                            <div className="flex items-center gap-3">
+
                             <div className="flex items-center gap-3 text-on-surface-variant text-body-md font-body-md bg-surface-container-low px-4 py-2 border border-outline-variant/50">
                                 <span className="inline-block w-2 h-2 rounded-full bg-primary animate-pulse"></span>
                                 <span>Items allocated safely</span>
+                            </div>
+
+                            <button
+                                onClick={() => setIsClearOpen(true)}
+                                className="font-label-caps text-label-caps uppercase tracking-widest text-on-surface-variant hover:text-error border border-outline-variant/50 px-4 py-2 transition-colors"
+                            >
+                                Clear Cart
+                            </button>
                             </div>
                         </div>
 
@@ -254,7 +307,7 @@ const Cart = () => {
                                                             <button
                                                                 title="Remove piece"
                                                                 className="text-on-surface-variant hover:text-error transition-colors p-1"
-                                                                onClick={() => console.log('TODO: Remove', item._id)}
+                                                                onClick={() => handleRemoveCartItem({ productId: product?._id, variantId })}
                                                             >
                                                                 <span className="material-symbols-outlined text-xl">
                                                                     delete
@@ -286,12 +339,12 @@ const Cart = () => {
                                                         {
                                                             unitPrice !== variantPrice.amount && (
                                                                 <>
-                                                                {
-                                                                unitPrice > variantPrice.amount
-                                                                ? <p className='text-[10px] uppercase tracking-[0.15em] mb-4 text-green-800 font-bold' > you will get this at {formatCurrency(variantPrice.amount, variantPrice.currency)} save {Math.abs(variantPrice.amount - unitPrice)}.  </p>
-                                                                    : <p className='text-[10px] uppercase tracking-[0.15em] mb-4 text-red-600 font-bold' > Warning this product will cost you {Math.abs(variantPrice.amount - unitPrice)} more.  </p>
+                                                                    {
+                                                                        unitPrice > variantPrice.amount
+                                                                            ? <p className='text-[10px] uppercase tracking-[0.15em] mb-4 text-green-800 font-bold' > you will get this at {formatCurrency(variantPrice.amount, variantPrice.currency)} save {Math.abs(variantPrice.amount - unitPrice)}.  </p>
+                                                                            : <p className='text-[10px] uppercase tracking-[0.15em] mb-4 text-red-600 font-bold' > Warning this product will cost you {Math.abs(variantPrice.amount - unitPrice)} more.  </p>
 
-                                                                }
+                                                                    }
                                                                 </>
                                                             )
                                                         }
@@ -366,9 +419,8 @@ const Cart = () => {
                                         </div>
 
                                         <span
-                                            className={`material-symbols-outlined text-on-surface-variant transition-transform ${
-                                                isPromoOpen ? 'rotate-180' : ''
-                                            }`}
+                                            className={`material-symbols-outlined text-on-surface-variant transition-transform ${isPromoOpen ? 'rotate-180' : ''
+                                                }`}
                                         >
                                             expand_more
                                         </span>

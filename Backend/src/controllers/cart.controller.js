@@ -1,5 +1,5 @@
 import cartModel from "../models/cart.model.js";
-import { stockOfVariant , findProductById } from "../dao/product.dao.js";
+import { stockOfVariant, findProductById } from "../dao/product.dao.js";
 import mongoose from "mongoose";
 import { createOrder } from "../services/payment.service.js";
 import { getCartDetails } from "../dao/cart.dao.js";
@@ -96,7 +96,7 @@ export const getCart = async (req, res) => {
 
     if (!cart) {
 
-        cart = await cartModel.create({ user: user._id })
+        cart = (await cartModel.findOne({ user: user._id })) || (await cartModel.create({ user: user._id }))
     }
 
 
@@ -260,6 +260,60 @@ export const verifyOrderController = async (req, res) => {
 
     return res.status(200).json({
         message: "Payment verified successfully",
+        success: true
+    })
+}
+
+
+
+export const removeCartItem = async (req, res) => {
+
+    const { productId, variantId } = req.params
+
+    const cart = await cartModel.findOneAndUpdate(
+        { user: req.user._id },
+        {
+            $pull: {
+                items: {
+                    product: new mongoose.Types.ObjectId(productId),
+                    variant: new mongoose.Types.ObjectId(variantId)
+                }
+            }
+        },
+        { new: true }
+    )
+
+    if (!cart) {
+        return res.status(404).json({
+            message: "Cart not found",
+            success: false
+        })
+    }
+
+    return res.status(200).json({
+        message: "Item removed from cart",
+        success: true
+    })
+}
+
+
+export const clearCart = async (req, res) => {
+
+    const cart = await cartModel.findOneAndUpdate(
+        { user: req.user._id },
+        { $set: { items: [] } },
+        { new: true }
+    )
+
+    if (!cart) {
+        return res.status(404).json({
+            message: "Cart not found",
+            success: false
+        })
+    }
+
+    return res.status(200).json({
+        message: "Cart cleared successfully",
         success: true
     })
 }

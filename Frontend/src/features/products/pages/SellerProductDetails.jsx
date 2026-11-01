@@ -242,7 +242,13 @@ const SellerProductDetails = () => {
   const handleSubmitVariant = async (e) => {
     e.preventDefault();
 
-    if (Object.keys(attributes).length == 0) {
+    // include an attribute that was typed but not added with the + button
+    const finalAttributes = { ...attributes };
+    if (attrKey.trim() && attrValue.trim() && attrKey.trim().toLowerCase() !== 'size') {
+      finalAttributes[attrKey.trim()] = attrValue.trim();
+    }
+
+    if (Object.keys(finalAttributes).length == 0) {
       alert('Atleast one attribute is required')
       return;
     }
@@ -255,7 +261,7 @@ const SellerProductDetails = () => {
       price: variantPrice
         ? { amount: parseFloat(variantPrice), currency: variantCurrency }
         : undefined, //Now Price is optional 
-      attributes
+      attributes: finalAttributes // Use the finalAttributes object here 
     };
 
     // Storing locally immediately, before the API call finishes

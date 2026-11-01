@@ -1,7 +1,7 @@
 import express from "express" 
 import {authenticateUser} from "../middlewares/auth.middleware.js"
 import { validateAddToCart ,validateIncrementCartItemQuantity } from "../validator/cart.validator.js"
-import { addToCart, createOrderController ,  getCart, incrementCartItemQuantity , verifyOrderController } from "../controllers/cart.controller.js"
+import { addToCart, createOrderController ,  getCart, incrementCartItemQuantity , verifyOrderController , removeCartItem , clearCart } from "../controllers/cart.controller.js"
 
 const router = express.Router()
 
@@ -48,5 +48,20 @@ router.patch("/quantity/increment/:productId/:variantId" , authenticateUser , va
 router.post("/payment/create/order", authenticateUser , createOrderController)
 
 router.post("/payment/verify/order" , authenticateUser , verifyOrderController)
+
+
+/**
+ * @route DELETE /api/cart/item/:productId/:variantId
+ * @desc Remove one item from the cart
+ * @access Private
+ */
+router.delete("/item/:productId/:variantId" , authenticateUser , validateIncrementCartItemQuantity , removeCartItem)
+
+/**
+ * @route DELETE /api/cart
+ * @desc Remove every item from the cart
+ * @access Private
+ */
+router.delete("/" , authenticateUser , clearCart)
 
 export default router
