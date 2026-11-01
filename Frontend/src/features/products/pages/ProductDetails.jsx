@@ -238,33 +238,36 @@ const ProductDetail = () => {
                             {product.variants && product.variants.length > 0 && (
                                 <div className="mb-10">
                                     <h3
-                                        className="text-[10px] uppercase tracking-[0.24em] font-medium mb-5"
+                                        className="text-[10px] uppercase tracking-[0.24em] font-medium mb-4"
                                         style={{ color: '#C9A96E' }}
                                     >
                                         Variants
                                     </h3>
 
-                                    {Object.entries(availableAttributes).map(([attrName, values]) => (
-                                        <div key={attrName} className="mb-6">
-                                            <h3 className="text-[10px] uppercase tracking-[0.24em] font-medium mb-3" style={{ color: '#C9A96E' }}>
-                                                {attrName}
-                                            </h3>
-                                            <div className="flex flex-wrap gap-2">
-                                                {values.map(val => {
-                                                    const isSelected = selectedAttributes[attrName] === val;
-                                                    return (
-                                                        <button
-                                                            key={val}
-                                                            onClick={() => handleAttributeChange(attrName, val)}
-                                                            className={`px-4 py-2 text-[11px] uppercase tracking-[0.15em] font-medium transition-all duration-300 border ${isSelected ? 'border-[#1b1c1a] bg-[#1b1c1a] text-[#fbf9f6]' : 'border-[#d0c5b5] text-[#1b1c1a] hover:border-[#1b1c1a]'}`}
-                                                        >
-                                                            {val}
-                                                        </button>
-                                                    );
-                                                })}
+                                    {/* Horizontal container for all variant groups */}
+                                    <div className="flex flex-row flex-wrap items-center gap-6 mb-6">
+                                        {Object.entries(availableAttributes).map(([attrName, values]) => (
+                                            <div key={attrName} className="flex flex-row items-center gap-2.5">
+                                                <span className="text-[10px] uppercase tracking-[0.24em] font-medium whitespace-nowrap" style={{ color: '#C9A96E' }}>
+                                                    {attrName}:
+                                                </span>
+                                                <div className="flex flex-row flex-wrap items-center gap-2">
+                                                    {values.map(val => {
+                                                        const isSelected = selectedAttributes[attrName] === val;
+                                                        return (
+                                                            <button
+                                                                key={val}
+                                                                onClick={() => handleAttributeChange(attrName, val)}
+                                                                className={`px-3.5 py-1.5 text-[11px] uppercase tracking-[0.15em] font-medium transition-all duration-300 border ${isSelected ? 'border-[#1b1c1a] bg-[#1b1c1a] text-[#fbf9f6]' : 'border-[#d0c5b5] text-[#1b1c1a] hover:border-[#1b1c1a]'}`}
+                                                            >
+                                                                {val}
+                                                            </button>
+                                                        );
+                                                    })}
+                                                </div>
                                             </div>
-                                        </div>
-                                    ))}
+                                        ))}
+                                    </div>
 
                                     {/* Stock indicator for selected variant */}
                                     {selectedAttributes !== null && activeProduct.stock !== undefined && (

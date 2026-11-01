@@ -264,20 +264,15 @@ const Cart = () => {
 
                                                         {/* Attributes */}
                                                         {Object.keys(attributes).length > 0 && (
-                                                            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mt-3 text-body-md font-body-md text-on-surface-variant">
-                                                                {Object.entries(attributes).map(([key, value], i) => (
-                                                                    <React.Fragment key={key}>
-                                                                        <div>
-                                                                            <span className="capitalize">{key}</span>:{' '}
-                                                                            <strong className="text-on-surface font-medium">
-                                                                                {value}
-                                                                            </strong>
-                                                                        </div>
-
-                                                                        {i < Object.entries(attributes).length - 1 && (
-                                                                            <span className="text-outline-variant">•</span>
-                                                                        )}
-                                                                    </React.Fragment>
+                                                            <div className="flex flex-row flex-wrap gap-2 mt-3">
+                                                                {Object.entries(attributes).map(([key, value]) => (
+                                                                    <span
+                                                                        key={key}
+                                                                        className="inline-flex items-center gap-1 px-3 py-1 border border-outline-variant bg-surface-container text-body-md font-body-md text-on-surface-variant whitespace-nowrap"
+                                                                    >
+                                                                        <span className="capitalize text-outline text-xs tracking-wide">{key}:</span>
+                                                                        <strong className="text-on-surface font-medium">{value}</strong>
+                                                                    </span>
                                                                 ))}
                                                             </div>
                                                         )}
