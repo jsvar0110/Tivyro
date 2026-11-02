@@ -83,13 +83,13 @@ const ImageCarousel = ({ images, title, isDark }) => {
         <>
           <button
             onClick={prev}
-            className="absolute left-2 top-1/2 -translate-y-1/2 w-7 h-7 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+            className="absolute left-2 top-1/2 -translate-y-1/2 w-7 h-7 flex items-center justify-center opacity-80 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200"
             style={{ backgroundColor: 'rgba(27,24,20,0.65)', color: '#fbf9f6' }}
             aria-label="Previous image"
           >‹</button>
           <button
             onClick={next}
-            className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+            className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 flex items-center justify-center opacity-80 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200"
             style={{ backgroundColor: 'rgba(27,24,20,0.65)', color: '#fbf9f6' }}
             aria-label="Next image"
           >›</button>
@@ -279,11 +279,11 @@ const Dashboard = () => {
         className="min-h-screen selection:bg-[#C9A96E]/30 transition-colors duration-300"
         style={{ backgroundColor: bg, fontFamily: "'Inter', sans-serif" }}
       >
-        <div className="max-w-7xl mx-auto px-6 lg:px-12 xl:px-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 xl:px-20">
 
           {/* ── Top Bar ── */}
-          <div className="pt-10 pb-0 flex items-center justify-between gap-4">
-            <div className="flex items-center gap-5">
+          <div className="pt-6 sm:pt-10 pb-0 flex items-center justify-between gap-3 sm:gap-4">
+            <div className="flex items-center gap-3 sm:gap-5">
               <button
                 onClick={() => navigate(-1)}
                 className="text-lg transition-colors duration-200 leading-none"
@@ -293,18 +293,18 @@ const Dashboard = () => {
                 onMouseLeave={e => e.currentTarget.style.color = backColor}
               >←</button>
               <span
-                className="text-[23px] font-medium tracking-[0.32em] uppercase"
+                className="text-lg sm:text-[23px] font-medium tracking-[0.32em] uppercase"
                 style={{ fontFamily: "'Cormorant Garamond', serif", color: '#ffa600ff' }}
               >
                 Tivyro.
               </span>
             </div>
 
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2.5 sm:gap-4">
               <ThemeToggle isDark={isDark} onToggle={toggleTheme} />
               <button
                 onClick={() => navigate('/seller/create-product')}
-                className="flex items-center gap-2 px-5 py-2.5 text-[10px] uppercase tracking-[0.25em] font-medium transition-all duration-300"
+                className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5 text-[9px] sm:text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.25em] font-medium transition-all duration-300"
                 style={{ backgroundColor: isDark ? '#C9A96E' : '#1b1c1a', color: isDark ? '#1b1c1a' : '#fbf9f6' }}
                 onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#C9A96E'; e.currentTarget.style.color = '#1b1c1a'; }}
                 onMouseLeave={e => { e.currentTarget.style.backgroundColor = isDark ? '#C9A96E' : '#1b1c1a'; e.currentTarget.style.color = isDark ? '#1b1c1a' : '#fbf9f6'; }}
@@ -312,29 +312,29 @@ const Dashboard = () => {
                 <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
                 </svg>
-                New Listing
+                <span>New Listing</span>
               </button>
             </div>
           </div>
 
           {/* decorative separator */}
-          <div className="mt-6 h-px" style={{ background: `linear-gradient(to right, transparent, ${borderColor}, transparent)` }} />
+          <div className="mt-4 sm:mt-6 h-px" style={{ background: `linear-gradient(to right, transparent, ${borderColor}, transparent)` }} />
 
           {/* ── Page Header ── */}
-          <div className="pt-8 pb-0">
+          <div className="pt-6 sm:pt-8 pb-0">
             <h1
-              className="text-4xl lg:text-5xl font-light leading-tight"
+              className="text-3xl sm:text-4xl lg:text-5xl font-light leading-tight"
               style={{ fontFamily: "'Cormorant Garamond', serif", color: headerColor }}
             >
               My Listings
             </h1>
-            <div className="mt-4 w-14 h-px" style={{ backgroundColor: '#C9A96E' }} />
+            <div className="mt-3 sm:mt-4 w-12 sm:w-14 h-px" style={{ backgroundColor: '#C9A96E' }} />
           </div>
 
           {/* ── Stats strip ── */}
           {sellerProducts && sellerProducts.length > 0 && (
             <div
-              className="mt-8 grid grid-cols-3 divide-x text-center transition-colors duration-300"
+              className="mt-6 sm:mt-8 grid grid-cols-3 divide-x text-center transition-colors duration-300"
               style={{ border: `1px solid ${borderColor}`, backgroundColor: statsBg }}
             >
               {[
@@ -347,11 +347,11 @@ const Dashboard = () => {
                   ).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })
                 },
               ].map(({ label, value }) => (
-                <div key={label} className="py-5 px-4" style={{ borderColor }}>
-                  <p className="text-2xl font-light" style={{ fontFamily: "'Cormorant Garamond', serif", color: statsValColor }}>
+                <div key={label} className="py-3 sm:py-5 px-2 sm:px-4" style={{ borderColor }}>
+                  <p className="text-lg sm:text-2xl font-light" style={{ fontFamily: "'Cormorant Garamond', serif", color: statsValColor }}>
                     {value}
                   </p>
-                  <p className="text-[9px] uppercase tracking-[0.2em] mt-1" style={{ color: statsLblColor }}>
+                  <p className="text-[8px] sm:text-[9px] uppercase tracking-[0.16em] sm:tracking-[0.2em] mt-0.5 sm:mt-1 truncate" style={{ color: statsLblColor }}>
                     {label}
                   </p>
                 </div>

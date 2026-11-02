@@ -8,7 +8,7 @@ import Home from '../features/products/pages/Home.jsx'
 import ProductDetails from "../features/products/pages/ProductDetails.jsx"
 import SellerProductDetails from "../features/products/pages/SellerProductDetails.jsx"
 import Cart from "../features/cart/pages/Cart.jsx"
-import Applayout from "./Applayout.jsx"
+import Applayout from "./AppLayout.jsx"
 import OrderSuccess from "../features/cart/pages/OrderSuccess.jsx"
 import GenderCollection from "../features/products/pages/GenderCollection.jsx"
 import GuestOnly from "../features/auth/components/GuestOnly.jsx"

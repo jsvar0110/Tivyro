@@ -146,20 +146,20 @@ const ProductDetail = () => {
                 {/* ── Navbar ── */}
 
 
-                <div className="max-w-7xl mx-auto px-8 lg:px-16 xl:px-24 pt-12 lg:pt-20">
-                    <div className="flex flex-col lg:flex-row gap-12 lg:gap-24 items-start">
+                <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 xl:px-20 pt-6 sm:pt-10 lg:pt-16">
+                    <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 xl:gap-16 items-start">
 
                         {/* ── LEFT: Image Gallery ── */}
-                        <div className="w-full lg:w-[70%] flex flex-col-reverse md:flex-row gap-4 lg:gap-6">
+                        <div className="w-full lg:w-[58%] xl:w-[60%] flex flex-col-reverse md:flex-row gap-4 lg:gap-6">
 
                             {/* Thumbnails (Vertical on Desktop, Horizontal on Mobile) */}
                             {images.length > 1 && (
-                                <div className="flex flex-row md:flex-col gap-4 overflow-x-auto md:overflow-y-auto pb-2 md:pb-0 scrollbar-hide w-full md:w-20 lg:w-24 flex-shrink-0 md:max-h-[calc(100vh-200px)]">
+                                <div className="flex flex-row md:flex-col gap-3 sm:gap-4 overflow-x-auto md:overflow-y-auto pb-2 md:pb-0 scrollbar-hide w-full md:w-20 lg:w-24 flex-shrink-0 md:max-h-[calc(100vh-200px)]">
                                     {images.map((img, idx) => (
                                         <button
                                             key={idx}
                                             onClick={() => setSelectedImage(idx)}
-                                            className={`flex-shrink-0 w-20 md:w-full aspect-[4/5] overflow-hidden transition-all duration-300 ${selectedImage === idx ? 'opacity-100 ring-1 ring-[#C9A96E] ring-offset-2' : 'opacity-50 hover:opacity-100'}`}
+                                            className={`flex-shrink-0 w-16 sm:w-20 md:w-full aspect-[4/5] overflow-hidden transition-all duration-300 ${selectedImage === idx ? 'opacity-100 ring-1 ring-[#C9A96E] ring-offset-2' : 'opacity-50 hover:opacity-100'}`}
                                             style={{ backgroundColor: '#f5f3f0', '--tw-ring-offset-color': '#fbf9f6' }}
                                         >
                                             <img
@@ -182,20 +182,20 @@ const ProductDetail = () => {
                                     <>
                                         <button
                                             onClick={() => setSelectedImage(prev => prev === 0 ? images.length - 1 : prev - 1)}
-                                            className="absolute left-4 lg:left-6 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 border"
-                                            style={{ backgroundColor: 'rgba(251,249,246,0.8)', borderColor: '#e4e2df', color: '#1b1c1a' }}
+                                            className="absolute left-2 sm:left-4 lg:left-6 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center opacity-80 sm:opacity-0 sm:group-hover:opacity-100 transition-all duration-300 border"
+                                            style={{ backgroundColor: 'rgba(251,249,246,0.85)', borderColor: '#e4e2df', color: '#1b1c1a' }}
                                             onMouseEnter={e => e.currentTarget.style.backgroundColor = '#fbf9f6'}
-                                            onMouseLeave={e => e.currentTarget.style.backgroundColor = 'rgba(251,249,246,0.8)'}
+                                            onMouseLeave={e => e.currentTarget.style.backgroundColor = 'rgba(251,249,246,0.85)'}
                                             aria-label="Previous image"
                                         >
                                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.2" d="M15 19l-7-7 7-7" /></svg>
                                         </button>
                                         <button
                                             onClick={() => setSelectedImage(prev => prev === images.length - 1 ? 0 : prev + 1)}
-                                            className="absolute right-4 lg:right-6 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 border"
-                                            style={{ backgroundColor: 'rgba(251,249,246,0.8)', borderColor: '#e4e2df', color: '#1b1c1a' }}
+                                            className="absolute right-2 sm:right-4 lg:right-6 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center opacity-80 sm:opacity-0 sm:group-hover:opacity-100 transition-all duration-300 border"
+                                            style={{ backgroundColor: 'rgba(251,249,246,0.85)', borderColor: '#e4e2df', color: '#1b1c1a' }}
                                             onMouseEnter={e => e.currentTarget.style.backgroundColor = '#fbf9f6'}
-                                            onMouseLeave={e => e.currentTarget.style.backgroundColor = 'rgba(251,249,246,0.8)'}
+                                            onMouseLeave={e => e.currentTarget.style.backgroundColor = 'rgba(251,249,246,0.85)'}
                                             aria-label="Next image"
                                         >
                                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.2" d="M9 5l7 7-7 7" /></svg>
@@ -206,10 +206,10 @@ const ProductDetail = () => {
                         </div>
 
                         {/* ── RIGHT: Product Details ── */}
-                        <div className="w-full lg:w-[30%] lg:sticky lg:top-24 flex flex-col pt-4">
+                        <div className="w-full lg:w-[42%] xl:w-[40%] lg:sticky lg:top-28 flex flex-col pt-2 lg:pt-0">
 
                             <h1
-                                className="text-4xl md:text-5xl lg:text-6xl font-light leading-[1.05] mb-6"
+                                className="text-3xl sm:text-4xl lg:text-5xl font-light leading-[1.08] mb-4 sm:mb-6"
                                 style={{ fontFamily: "'Cormorant Garamond', serif", color: '#1b1c1a' }}
                             >
                                 {product.title}
@@ -237,29 +237,29 @@ const ProductDetail = () => {
 
                             {/* ── Variant Selector ── */}
                             {product.variants && product.variants.length > 0 && (
-                                <div className="mb-10">
+                                <div className="mb-8 sm:mb-10">
                                     <h3
-                                        className="text-[10px] uppercase tracking-[0.24em] font-medium mb-4"
+                                        className="text-[10px] uppercase tracking-[0.24em] font-medium mb-3 sm:mb-4"
                                         style={{ color: '#C9A96E' }}
                                     >
                                         Variants
                                     </h3>
 
                                     {/* Horizontal container for all variant groups */}
-                                    <div className="flex flex-row flex-wrap items-center gap-6 mb-6">
+                                    <div className="flex flex-row flex-wrap items-center gap-4 sm:gap-6 mb-4 sm:mb-6">
                                         {Object.entries(availableAttributes).map(([attrName, values]) => (
-                                            <div key={attrName} className="flex flex-row items-center gap-2.5">
+                                            <div key={attrName} className="flex flex-row flex-wrap items-center gap-2 sm:gap-2.5">
                                                 <span className="text-[10px] uppercase tracking-[0.24em] font-medium whitespace-nowrap" style={{ color: '#C9A96E' }}>
                                                     {attrName}:
                                                 </span>
-                                                <div className="flex flex-row flex-wrap items-center gap-2">
+                                                <div className="flex flex-row flex-wrap items-center gap-1.5 sm:gap-2">
                                                     {values.map(val => {
                                                         const isSelected = selectedAttributes[attrName] === val;
                                                         return (
                                                             <button
                                                                 key={val}
                                                                 onClick={() => handleAttributeChange(attrName, val)}
-                                                                className={`px-3.5 py-1.5 text-[11px] uppercase tracking-[0.15em] font-medium transition-all duration-300 border ${isSelected ? 'border-[#1b1c1a] bg-[#1b1c1a] text-[#fbf9f6]' : 'border-[#d0c5b5] text-[#1b1c1a] hover:border-[#1b1c1a]'}`}
+                                                                className={`px-3 py-1.5 sm:px-3.5 text-[11px] uppercase tracking-[0.15em] font-medium transition-all duration-300 border ${isSelected ? 'border-[#1b1c1a] bg-[#1b1c1a] text-[#fbf9f6]' : 'border-[#d0c5b5] text-[#1b1c1a] hover:border-[#1b1c1a]'}`}
                                                             >
                                                                 {val}
                                                             </button>
@@ -363,7 +363,7 @@ const ProductDetail = () => {
                             </div>
 
                             {/* Extra elegant details */}
-                            <div className="mt-14 space-y-4 text-[10px] uppercase tracking-[0.1em]" style={{ color: '#B5ADA3' }}>
+                            <div className="mt-8 sm:mt-14 space-y-3.5 sm:space-y-4 text-[10px] uppercase tracking-[0.1em]" style={{ color: '#B5ADA3' }}>
                                 <div className="flex justify-between border-b pb-3" style={{ borderColor: '#e4e2df' }}>
                                     <span>Shipping</span>
                                     <span>Complimentary over INR 15,000</span>

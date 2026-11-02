@@ -68,8 +68,8 @@ const ImageCarousel = ({ images, title, isDark, aspectClass = 'aspect-[4/5]' }) 
       <img src={images[idx].url} alt={`${title} ${idx + 1}`} className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105" />
       {images.length > 1 && (
         <>
-          <button onClick={prev} className="absolute left-2 top-1/2 -translate-y-1/2 w-7 h-7 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200" style={{ backgroundColor: 'rgba(27,24,20,0.65)', color: '#fbf9f6' }}>&#8249;</button>
-          <button onClick={next} className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200" style={{ backgroundColor: 'rgba(27,24,20,0.65)', color: '#fbf9f6' }}>&#8250;</button>
+          <button onClick={prev} className="absolute left-2 top-1/2 -translate-y-1/2 w-7 h-7 flex items-center justify-center opacity-80 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200" style={{ backgroundColor: 'rgba(27,24,20,0.65)', color: '#fbf9f6' }}>&#8249;</button>
+          <button onClick={next} className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 flex items-center justify-center opacity-80 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200" style={{ backgroundColor: 'rgba(27,24,20,0.65)', color: '#fbf9f6' }}>&#8250;</button>
           <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
             {images.map((_, i) => (
               <button key={i} onClick={(e) => { e.stopPropagation(); setIdx(i); }} className="w-1.5 h-1.5 rounded-full transition-all duration-200" style={{ backgroundColor: i === idx ? '#C9A96E' : 'rgba(255,255,255,0.5)' }} />
@@ -347,42 +347,42 @@ const SellerProductDetails = () => {
       <div className="min-h-screen selection:bg-[#C9A96E]/30 transition-colors duration-300" style={{ backgroundColor: bg, fontFamily: "'Inter', sans-serif" }}>
 
         {/* Top Bar */}
-        <div className="sticky top-0 z-30 px-6 lg:px-12 xl:px-20 py-3 flex items-center justify-between gap-4 transition-colors duration-300"
+        <div className="sticky top-0 z-30 px-4 sm:px-8 lg:px-12 xl:px-20 py-3 flex items-center justify-between gap-3 sm:gap-4 transition-colors duration-300"
           style={{ backgroundColor: isDark ? 'rgba(18,17,14,0.92)' : 'rgba(251,249,246,0.92)', backdropFilter: 'blur(14px)', borderBottom: `1px solid ${borderColor}` }}>
-          <div className="flex items-center gap-5">
+          <div className="flex items-center gap-3 sm:gap-5">
             <button onClick={() => navigate(-1)} className="text-lg transition-colors duration-200 leading-none" style={{ color: backColor }}
               onMouseEnter={e => e.currentTarget.style.color = '#C9A96E'} onMouseLeave={e => e.currentTarget.style.color = backColor}>
               &#8592;
             </button>
-            <span className="text-[20px] font-medium tracking-[0.28em] uppercase" style={{ fontFamily: "'Cormorant Garamond', serif", color: '#ffa600' }}>
+            <span className="text-lg sm:text-[20px] font-medium tracking-[0.28em] uppercase" style={{ fontFamily: "'Cormorant Garamond', serif", color: '#ffa600' }}>
               Tivyro.
             </span>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2.5 sm:gap-4">
             <ThemeToggle isDark={isDark} onToggle={toggleTheme} />
             <button
               onClick={() => document.getElementById('create-variant-form')?.scrollIntoView({ behavior: 'smooth' })}
-              className="flex items-center gap-2 px-5 py-2.5 text-[10px] uppercase tracking-[0.25em] font-medium transition-all duration-300"
+              className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5 text-[9px] sm:text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.25em] font-medium transition-all duration-300"
               style={{ backgroundColor: '#C9A96E', color: '#12110e' }}
               onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#b8924a'; }}
               onMouseLeave={e => { e.currentTarget.style.backgroundColor = '#C9A96E'; }}>
               <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>
-              Add Variant
+              <span>Add Variant</span>
             </button>
           </div>
         </div>
 
-        <div className="max-w-7xl mx-auto px-6 lg:px-12 xl:px-20">
-          <div className="mt-8 h-px" style={{ background: `linear-gradient(to right, transparent, ${borderColor}, transparent)` }} />
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 xl:px-20">
+          <div className="mt-6 sm:mt-8 h-px" style={{ background: `linear-gradient(to right, transparent, ${borderColor}, transparent)` }} />
 
           {/* Page Header */}
-          <div className="pt-8 pb-0">
-            <h1 className="text-4xl lg:text-5xl font-light leading-tight" style={{ fontFamily: "'Cormorant Garamond', serif", color: headerColor }}>
+          <div className="pt-6 sm:pt-8 pb-0">
+            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-light leading-tight" style={{ fontFamily: "'Cormorant Garamond', serif", color: headerColor }}>
               {product?.title || 'Product Details'}
             </h1>
-            <div className="mt-3 w-14 h-px" style={{ backgroundColor: '#C9A96E' }} />
+            <div className="mt-3 w-12 sm:w-14 h-px" style={{ backgroundColor: '#C9A96E' }} />
             {product?.description && (
-              <p className="mt-4 max-w-xl text-sm leading-relaxed" style={{ color: descColor }}>{product.description}</p>
+              <p className="mt-3 sm:mt-4 max-w-xl text-xs sm:text-sm leading-relaxed" style={{ color: descColor }}>{product.description}</p>
             )}
           </div>
 
@@ -447,7 +447,7 @@ const SellerProductDetails = () => {
                   {/* Attributes */}
                   <div className="flex flex-col gap-3">
                     <label className="text-[10px] uppercase tracking-[0.2em] font-medium" style={{ color: labelColor }}>Attributes</label>
-                    <div className="flex gap-2 items-end">
+                    <div className="flex flex-col sm:flex-row gap-2 sm:items-end">
                       <div className="flex flex-col gap-0.5 flex-1">
                         <span className="text-[9px] uppercase tracking-[0.15em]" style={{ color: subLabelColor }}>Key</span>
                         <input type="text" value={attrKey} onChange={e => setAttrKey(e.target.value)} placeholder="e.g. Color"
@@ -461,7 +461,7 @@ const SellerProductDetails = () => {
                           onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addAttribute())} />
                       </div>
                       <button type="button" onClick={addAttribute}
-                        className="px-4 py-2.5 text-[10px] uppercase tracking-[0.2em] font-medium transition-all duration-200 shrink-0"
+                        className="w-full sm:w-auto px-4 py-2.5 text-[10px] uppercase tracking-[0.2em] font-medium transition-all duration-200 shrink-0"
                         style={{ border: '1px solid rgba(201,169,110,0.5)', color: '#C9A96E', backgroundColor: 'transparent' }}
                         onMouseEnter={e => { e.currentTarget.style.backgroundColor = 'rgba(201,169,110,0.1)'; }}
                         onMouseLeave={e => { e.currentTarget.style.backgroundColor = 'transparent'; }}>Add</button>

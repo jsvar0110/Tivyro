@@ -120,7 +120,7 @@ export default function Register() {
         </div>
 
         {/* ── Top Navigation Bar ── */}
-        <header className="relative z-20 w-full px-6 sm:px-10 lg:px-14 pt-6 sm:pt-8 flex items-center justify-between">
+        <header className="relative z-20 w-full px-4 sm:px-8 lg:px-14 pt-4 sm:pt-6 flex items-center justify-between">
           <div className="flex items-center gap-10">
             {/* Logo */}
             <Link
@@ -182,17 +182,17 @@ export default function Register() {
         </header>
 
         {/* ── Main Hero Section ── */}
-        <main className="relative z-10 flex-1 w-full max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-14 py-8 lg:py-4 flex flex-col lg:flex-row items-center justify-between gap-10">
+        <main className="relative z-10 flex-1 w-full max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-14 py-6 sm:py-8 lg:py-4 flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-10">
           {/* Left Column: Editorial Headline & Shop CTA */}
           <div className="w-full lg:w-1/2 flex flex-col justify-center items-start pt-2 lg:pt-0">
             {/* Eyebrow */}
-            <p className="text-[11px] font-semibold tracking-[0.24em] text-[#4d4841] uppercase mb-3 sm:mb-4">
+            <p className="text-[11px] font-semibold tracking-[0.24em] text-[#4d4841] uppercase mb-2.5 sm:mb-4">
               Fashion Meets Comfort
             </p>
 
             {/* Main Headline */}
             <h1
-              className="text-[44px] sm:text-6xl lg:text-[72px] leading-[1.04] text-[#1c1a17] font-serif italic mb-4 sm:mb-5 tracking-normal font-normal"
+              className="text-[38px] sm:text-6xl lg:text-[72px] leading-[1.04] text-[#1c1a17] font-serif italic mb-3 sm:mb-5 tracking-normal font-normal"
               style={{
                 fontFamily:
                   "'Cormorant Garamond', 'Playfair Display', Georgia, serif",
@@ -204,36 +204,27 @@ export default function Register() {
             </h1>
 
             {/* Subtext */}
-            <p className="text-sm sm:text-[15px] leading-relaxed text-[#544f47] mb-6 sm:mb-8 max-w-[340px]">
+            <p className="text-xs sm:text-[15px] leading-relaxed text-[#544f47] mb-4 sm:mb-8 max-w-[340px]">
               Trendy apparel, timeless pieces, and seasonal collections — all in
               one place.
             </p>
 
-            {/* Shop Button */}
-            {/* <Link
-              to="/"
-              className="inline-flex items-center gap-2.5 border border-[#23201d] text-[#23201d] hover:bg-[#23201d] hover:text-white px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-200 no-underline shadow-sm"
-            >
-              <span>Shop Collection</span>
-              <span className="text-base leading-none">→</span>
-            </Link> */}
-
             {/* Carousel Navigation Indicators */}
-            <div className="hidden sm:flex items-center gap-2 mt-10 sm:mt-14">
+            <div className="hidden sm:flex items-center gap-2 mt-8 sm:mt-14">
               <span className="w-8 h-1.5 bg-white rounded-full shadow-sm" />
               <span className="w-5 h-1.5 bg-black/25 rounded-full" />
             </div>
           </div>
 
           {/* Right Column: Floating Register Card */}
-          <div className="w-full lg:w-auto flex justify-center lg:justify-end my-4">
+          <div className="w-full lg:w-auto flex justify-center lg:justify-end my-2 sm:my-4">
             <div
-              className="w-full max-w-[430px] bg-white rounded-[28px] sm:rounded-[32px] p-6 sm:p-8 shadow-[0_24px_50px_rgba(25,20,15,0.09),0_2px_8px_rgba(0,0,0,0.03)] border border-white/80"
+              className="w-full max-w-[430px] bg-white rounded-[24px] sm:rounded-[32px] p-5 sm:p-7 md:p-8 shadow-[0_24px_50px_rgba(25,20,15,0.09),0_2px_8px_rgba(0,0,0,0.03)] border border-white/80"
               style={{ backdropFilter: "blur(8px)" }}
             >
               {/* Card Title */}
               <h2
-                className="text-[28px] sm:text-[32px] font-medium text-[#1c1a17] tracking-tight leading-tight mb-1.5"
+                className="text-[26px] sm:text-[32px] font-medium text-[#1c1a17] tracking-tight leading-tight mb-1 sm:mb-1.5"
                 style={{
                   fontFamily:
                     "'Cormorant Garamond', 'Playfair Display', Georgia, serif",

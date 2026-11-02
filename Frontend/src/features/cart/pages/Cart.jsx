@@ -120,7 +120,7 @@ const Cart = () => {
                 className="min-h-screen flex flex-col"
             >
                 {/* ── Sub-header / Breadcrumb Bar ── */}
-                <div className="border-b border-gray-200 bg-white px-6 md:px-16 py-3.5">
+                <div className="border-b border-gray-200 bg-white px-4 sm:px-8 md:px-16 py-3 sm:py-3.5">
                     <div className="max-w-7xl mx-auto flex items-center justify-between text-[11px] font-semibold tracking-widest uppercase">
                         <div className="flex items-center gap-2 text-gray-500">
                             <Link to="/" className="text-gray-500 hover:text-black transition-colors no-underline">
@@ -175,11 +175,11 @@ const Cart = () => {
                 )}
 
                 {/* ── Main Cart Container ── */}
-                <main className="flex-1 w-full max-w-7xl mx-auto px-6 md:px-16 py-12">
+                <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-8 md:px-16 py-8 sm:py-12">
                     {!cart?.items?.length ? (
                         /* Empty State */
-                        <div className="min-h-[55vh] flex flex-col items-center justify-center text-center py-16">
-                            <span className="material-symbols-outlined text-6xl text-gray-300 mb-4">
+                        <div className="min-h-[50vh] flex flex-col items-center justify-center text-center py-12 sm:py-16">
+                            <span className="material-symbols-outlined text-5xl sm:text-6xl text-gray-300 mb-4">
                                 shopping_bag
                             </span>
                             <span className="text-[10px] font-bold tracking-[0.24em] text-gray-400 uppercase mb-2">
@@ -187,11 +187,11 @@ const Cart = () => {
                             </span>
                             <h1
                                 style={{ fontFamily: "'Bodoni Moda', serif" }}
-                                className="text-3xl md:text-5xl font-normal uppercase text-black tracking-tight mb-4"
+                                className="text-2xl sm:text-3xl md:text-5xl font-normal uppercase text-black tracking-tight mb-4"
                             >
                                 No Pieces Reserved
                             </h1>
-                            <p className="text-base text-gray-500 max-w-max leading-relaxed mb-8">
+                            <p className="text-sm sm:text-base text-gray-500 max-w-max leading-relaxed mb-8">
                                 Your shopping bag is currently empty. Explore our latest arrivals and curated collections to find your perfect pieces.
                             </p>
                             <Link
@@ -199,7 +199,7 @@ const Cart = () => {
                                 style={{
                                     backgroundColor: '#000',
                                     color: '#fff',
-                                    padding: '16px 36px',
+                                    padding: '14px 32px',
                                     fontSize: '11px',
                                     fontWeight: '700',
                                     letterSpacing: '0.18em',
@@ -218,23 +218,23 @@ const Cart = () => {
                     ) : (
                         <>
                             {/* Page Header */}
-                            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 mb-8 border-b border-gray-200">
+                            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-4 sm:pb-6 mb-6 sm:mb-8 border-b border-gray-200">
                                 <div>
                                     <p className="text-[10px] font-bold tracking-[0.24em] uppercase text-gray-400 mb-1">
                                         Your Selection
                                     </p>
                                     <h1
                                         style={{ fontFamily: "'Bodoni Moda', serif" }}
-                                        className="text-3xl md:text-4xl font-normal uppercase tracking-wide text-black"
+                                        className="text-2xl sm:text-3xl md:text-4xl font-normal uppercase tracking-wide text-black"
                                     >
                                         Shopping Bag
-                                        <span className="text-sm font-normal text-gray-400 normal-case ml-3" style={{ fontFamily: "'Inter', sans-serif" }}>
+                                        <span className="text-xs sm:text-sm font-normal text-gray-400 normal-case ml-2.5" style={{ fontFamily: "'Inter', sans-serif" }}>
                                             ({cart?.items?.length} {cart?.items?.length === 1 ? 'item' : 'items'})
                                         </span>
                                     </h1>
                                 </div>
 
-                                <div className="flex items-center gap-4">
+                                <div className="flex items-center gap-3 sm:gap-4">
                                     <div className="hidden sm:flex items-center gap-2 text-xs font-medium text-gray-600 bg-white border border-gray-200 px-3.5 py-1.5">
                                         <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                                         <span>Items allocated</span>
@@ -249,7 +249,7 @@ const Cart = () => {
                             </div>
 
                             {/* 2-Column Responsive Layout */}
-                            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+                            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
                                 {/* LEFT COLUMN: Items List + Assurances */}
                                 <div className="lg:col-span-8 flex flex-col gap-6">
 
@@ -289,7 +289,7 @@ const Cart = () => {
                                             return (
                                                 <article
                                                     key={item._id}
-                                                    className="p-6 sm:p-8 flex flex-col sm:flex-row gap-6 transition-colors hover:bg-neutral-50/50"
+                                                    className="p-4 sm:p-6 md:p-8 flex flex-col sm:flex-row gap-4 sm:gap-6 transition-colors hover:bg-neutral-50/50"
                                                 >
                                                     {/* Product Thumbnail */}
                                                     <div
@@ -608,7 +608,7 @@ const Cart = () => {
                 </main>
 
                 {/* ── Editorial Footer (matches Home.jsx) ── */}
-                <footer style={{ backgroundColor: '#fff', borderTop: '1px solid #e5e5e5' }} className="px-6 md:px-16 py-12 flex flex-col md:flex-row justify-between items-start gap-10 mt-12">
+                <footer style={{ backgroundColor: '#fff', borderTop: '1px solid #e5e5e5' }} className="px-4 sm:px-8 md:px-16 py-12 flex flex-col md:flex-row justify-between items-start gap-8 md:gap-10 mt-10 sm:mt-12">
                     <div className="flex flex-col gap-3 max-w-xs">
                         <span style={{ fontFamily: "'Bodoni Moda', serif", fontSize: '22px', fontWeight: '700', letterSpacing: '0.18em', textTransform: 'uppercase', color: '#000' }}>
                             TIVYRO
@@ -620,7 +620,7 @@ const Cart = () => {
                             © 2026 TIVYRO. ALL RIGHTS RESERVED.
                         </p>
                     </div>
-                    <div className="flex flex-col sm:flex-row gap-10 md:gap-16">
+                    <div className="flex flex-col sm:flex-row gap-8 sm:gap-12 md:gap-16 w-full sm:w-auto">
                         <div className="flex flex-col gap-2.5">
                             <span style={{ fontSize: '10px', fontWeight: '700', letterSpacing: '0.22em', textTransform: 'uppercase', color: '#000' }}>
                                 EXPLORE

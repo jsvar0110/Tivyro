@@ -166,14 +166,14 @@ const CreateProduct = () => {
             >
                 {/* ── Sticky Top Bar ── */}
                 <div
-                    className="sticky top-0 z-20 px-6 lg:px-16 xl:px-24 py-3 flex items-center justify-between gap-4 transition-colors duration-300"
+                    className="sticky top-0 z-20 px-4 sm:px-8 lg:px-16 xl:px-24 py-3 flex items-center justify-between gap-4 transition-colors duration-300"
                     style={{
                         backgroundColor: isDark ? 'rgba(18,17,14,0.92)' : 'rgba(251,249,246,0.92)',
                         backdropFilter: 'blur(12px)',
                         borderBottom: `1px solid ${borderColor}`,
                     }}
                 >
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-3 sm:gap-4">
                         <button
                             onClick={() => navigate(-1)}
                             className="text-lg transition-colors duration-200 leading-none"
@@ -183,7 +183,7 @@ const CreateProduct = () => {
                             onMouseLeave={e => e.currentTarget.style.color = backColor}
                         >←</button>
                         <span
-                            className="text-[18px] font-medium tracking-[0.28em] uppercase"
+                            className="text-base sm:text-[18px] font-medium tracking-[0.28em] uppercase"
                             style={{ fontFamily: "'Cormorant Garamond', serif", color: '#ffa600ff' }}
                         >
                             Tivyro.
@@ -193,12 +193,12 @@ const CreateProduct = () => {
                     <ThemeToggle isDark={isDark} onToggle={toggleTheme} />
                 </div>
 
-                <div className="max-w-6xl mx-auto px-6 lg:px-16 xl:px-24">
+                <div className="max-w-6xl mx-auto px-4 sm:px-8 lg:px-16 xl:px-24">
 
                     {/* ── Page Header ── */}
                     <div className="pt-6 pb-0">
                         <h1
-                            className="text-3xl lg:text-4xl font-light leading-tight"
+                            className="text-2xl sm:text-3xl lg:text-4xl font-light leading-tight"
                             style={{ fontFamily: "'Cormorant Garamond', serif", color: headerColor }}
                         >
                             New Listing

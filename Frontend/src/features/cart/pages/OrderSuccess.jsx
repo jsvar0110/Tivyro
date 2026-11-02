@@ -33,12 +33,12 @@ const OrderSuccess = () => {
                 className="min-h-screen pb-24 selection:bg-[#C9A96E]/30"
                 style={{ backgroundColor: tokens.surface, fontFamily: "'Inter', sans-serif" }}
             >
-                <main className="pt-12 lg:pt-20 px-6 md:px-12 lg:px-24 max-w-7xl mx-auto">
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
+                <main className="pt-8 sm:pt-12 lg:pt-20 px-4 sm:px-8 md:px-12 lg:px-20 max-w-7xl mx-auto">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-12 lg:gap-16 items-start">
                         
                         {/* Left Column: Success Message & Summary */}
-                        <div className="lg:col-span-7 space-y-12">
-                            <section className="space-y-6">
+                        <div className="lg:col-span-7 space-y-8 sm:space-y-12">
+                            <section className="space-y-4 sm:space-y-6">
                                 <span 
                                     className="uppercase tracking-[0.2em] text-[10px]"
                                     style={{ color: tokens.secondary }}
@@ -46,21 +46,21 @@ const OrderSuccess = () => {
                                     TRANSACTION COMPLETE
                                 </span>
                                 <h1 
-                                    className="text-5xl md:text-7xl leading-tight font-light tracking-tight"
+                                    className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-tight font-light tracking-tight"
                                     style={{ fontFamily: "'Cormorant Garamond', serif", color: tokens.onSurface }}
                                 >
                                     A piece of our <br/>
                                     <i className="italic">Atelier</i> is yours.
                                 </h1>
-                                <div className="space-y-2 mt-6">
+                                <div className="space-y-1 sm:space-y-2 mt-4 sm:mt-6">
                                     <p 
-                                        className="text-sm uppercase tracking-widest"
+                                        className="text-xs sm:text-sm uppercase tracking-widest"
                                         style={{ color: tokens.outline }}
                                     >
                                         Order Reference
                                     </p>
                                     <p 
-                                        className="text-2xl"
+                                        className="text-xl sm:text-2xl"
                                         style={{ fontFamily: "'Cormorant Garamond', serif", color: tokens.primaryDark }}
                                     >
                                         #{orderId}
@@ -69,19 +69,19 @@ const OrderSuccess = () => {
                             </section>
                             
                             <section 
-                                className="p-8 md:p-12 space-y-8"
+                                className="p-5 sm:p-8 md:p-12 space-y-6 sm:space-y-8"
                                 style={{ backgroundColor: tokens.surfaceLow }}
                             >
                                 <h3 
-                                    className="text-xl pb-4"
+                                    className="text-lg sm:text-xl pb-3 sm:pb-4"
                                     style={{ fontFamily: "'Cormorant Garamond', serif", borderBottom: `1px solid ${tokens.outlineVariant}` }}
                                 >
                                     Order Summary
                                 </h3>
                                 
-                                <div className="flex gap-6 items-center">
+                                <div className="flex gap-4 sm:gap-6 items-center">
                                     <div 
-                                        className="w-24 h-32 flex-shrink-0 overflow-hidden"
+                                        className="w-20 h-28 sm:w-24 sm:h-32 flex-shrink-0 overflow-hidden"
                                         style={{ backgroundColor: tokens.surfaceHigh }}
                                     >
                                         <img 
@@ -92,18 +92,18 @@ const OrderSuccess = () => {
                                     </div>
                                     <div className="flex-grow space-y-1">
                                         <h4 
-                                            className="text-lg"
+                                            className="text-base sm:text-lg"
                                             style={{ fontFamily: "'Cormorant Garamond', serif" }}
                                         >
                                             Architectural Wool Overcoat
                                         </h4>
                                         <p 
-                                            className="text-sm uppercase tracking-tighter"
+                                            className="text-xs sm:text-sm uppercase tracking-tighter"
                                             style={{ color: tokens.outline }}
                                         >
                                             Camel / Large
                                         </p>
-                                        <p className="font-semibold mt-2">$1,450.00</p>
+                                        <p className="font-semibold mt-1 sm:mt-2 text-sm sm:text-base">$1,450.00</p>
                                     </div>
                                 </div>
                                 
