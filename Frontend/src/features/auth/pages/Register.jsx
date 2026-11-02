@@ -72,6 +72,25 @@ export default function Register() {
         rel="stylesheet"
       />
 
+      <style>{`
+        .auth-input {
+          color: #000000 !important;
+          caret-color: #000000 !important;
+          color-scheme: light !important;
+        }
+        .auth-input::placeholder {
+          color: #8c867e !important;
+        }
+        .auth-input:-webkit-autofill,
+        .auth-input:-webkit-autofill:hover, 
+        .auth-input:-webkit-autofill:focus {
+          -webkit-text-fill-color: #000000 !important;
+          -webkit-box-shadow: 0 0 0px 1000px #ffffff inset !important;
+          box-shadow: 0 0 0px 1000px #ffffff inset !important;
+          transition: background-color 5000s ease-in-out 0s;
+        }
+      `}</style>
+
       <div
         className="min-h-screen w-full relative flex flex-col justify-between overflow-x-hidden select-none bg-[#ded8d0]"
         style={{ fontFamily: "'Inter', sans-serif" }}
@@ -242,10 +261,10 @@ export default function Register() {
               <form onSubmit={handleSubmit} className="flex flex-col gap-3">
                 {/* Full Name */}
                 <div>
-                  <div className="relative flex items-center border border-[#d9d4cd] rounded-xl px-3.5 py-2.5 focus-within:border-[#1c1a17] focus-within:ring-1 focus-within:ring-[#1c1a17] transition-all bg-[#ffffff]">
+                  <div className="relative flex items-center border border-[#d9d4cd] rounded-xl px-3.5 py-2.5 focus-within:border-black focus-within:ring-1 focus-within:ring-black transition-all bg-[#ffffff]">
                     <span
-                      className="material-symbols-outlined text-[#7b756e] text-[18px] mr-2.5 select-none pointer-events-none"
-                      style={{ fontVariationSettings: "'FILL' 0, 'wght' 300" }}
+                      className="material-symbols-outlined text-black text-[18px] mr-2.5 select-none pointer-events-none"
+                      style={{ fontVariationSettings: "'FILL' 0, 'wght' 400" }}
                     >
                       person
                     </span>
@@ -258,17 +277,18 @@ export default function Register() {
                       autoComplete="name"
                       value={formData.fullName}
                       onChange={handleChange}
-                      className="w-full text-sm text-[#1c1a17] placeholder:text-[#99948d] bg-transparent outline-none"
+                      style={{ color: "#000000", caretColor: "#000000", colorScheme: "light" }}
+                      className="auth-input w-full text-sm text-black placeholder:text-[#8c867e] bg-transparent outline-none"
                     />
                   </div>
                 </div>
 
                 {/* Email Address */}
                 <div>
-                  <div className="relative flex items-center border border-[#d9d4cd] rounded-xl px-3.5 py-2.5 focus-within:border-[#1c1a17] focus-within:ring-1 focus-within:ring-[#1c1a17] transition-all bg-[#ffffff]">
+                  <div className="relative flex items-center border border-[#d9d4cd] rounded-xl px-3.5 py-2.5 focus-within:border-black focus-within:ring-1 focus-within:ring-black transition-all bg-[#ffffff]">
                     <span
-                      className="material-symbols-outlined text-[#7b756e] text-[18px] mr-2.5 select-none pointer-events-none"
-                      style={{ fontVariationSettings: "'FILL' 0, 'wght' 300" }}
+                      className="material-symbols-outlined text-black text-[18px] mr-2.5 select-none pointer-events-none"
+                      style={{ fontVariationSettings: "'FILL' 0, 'wght' 400" }}
                     >
                       mail
                     </span>
@@ -281,17 +301,18 @@ export default function Register() {
                       autoComplete="email"
                       value={formData.email}
                       onChange={handleChange}
-                      className="w-full text-sm text-[#1c1a17] placeholder:text-[#99948d] bg-transparent outline-none"
+                      style={{ color: "#000000", caretColor: "#000000", colorScheme: "light" }}
+                      className="auth-input w-full text-sm text-black placeholder:text-[#8c867e] bg-transparent outline-none"
                     />
                   </div>
                 </div>
 
                 {/* Contact Number */}
                 <div>
-                  <div className="relative flex items-center border border-[#d9d4cd] rounded-xl px-3.5 py-2.5 focus-within:border-[#1c1a17] focus-within:ring-1 focus-within:ring-[#1c1a17] transition-all bg-[#ffffff]">
+                  <div className="relative flex items-center border border-[#d9d4cd] rounded-xl px-3.5 py-2.5 focus-within:border-black focus-within:ring-1 focus-within:ring-black transition-all bg-[#ffffff]">
                     <span
-                      className="material-symbols-outlined text-[#7b756e] text-[18px] mr-2.5 select-none pointer-events-none"
-                      style={{ fontVariationSettings: "'FILL' 0, 'wght' 300" }}
+                      className="material-symbols-outlined text-black text-[18px] mr-2.5 select-none pointer-events-none"
+                      style={{ fontVariationSettings: "'FILL' 0, 'wght' 400" }}
                     >
                       call
                     </span>
@@ -304,17 +325,18 @@ export default function Register() {
                       autoComplete="tel"
                       value={formData.contactNumber}
                       onChange={handleChange}
-                      className="w-full text-sm text-[#1c1a17] placeholder:text-[#99948d] bg-transparent outline-none"
+                      style={{ color: "#000000", caretColor: "#000000", colorScheme: "light" }}
+                      className="auth-input w-full text-sm text-black placeholder:text-[#8c867e] bg-transparent outline-none"
                     />
                   </div>
                 </div>
 
                 {/* Password */}
                 <div>
-                  <div className="relative flex items-center border border-[#d9d4cd] rounded-xl px-3.5 py-2.5 focus-within:border-[#1c1a17] focus-within:ring-1 focus-within:ring-[#1c1a17] transition-all bg-[#ffffff]">
+                  <div className="relative flex items-center border border-[#d9d4cd] rounded-xl px-3.5 py-2.5 focus-within:border-black focus-within:ring-1 focus-within:ring-black transition-all bg-[#ffffff]">
                     <span
-                      className="material-symbols-outlined text-[#7b756e] text-[18px] mr-2.5 select-none pointer-events-none"
-                      style={{ fontVariationSettings: "'FILL' 0, 'wght' 300" }}
+                      className="material-symbols-outlined text-black text-[18px] mr-2.5 select-none pointer-events-none"
+                      style={{ fontVariationSettings: "'FILL' 0, 'wght' 400" }}
                     >
                       lock
                     </span>
@@ -327,17 +349,18 @@ export default function Register() {
                       autoComplete="new-password"
                       value={formData.password}
                       onChange={handleChange}
-                      className="w-full text-sm text-[#1c1a17] placeholder:text-[#99948d] bg-transparent outline-none pr-8"
+                      style={{ color: "#000000", caretColor: "#000000", colorScheme: "light" }}
+                      className="auth-input w-full text-sm text-black placeholder:text-[#8c867e] bg-transparent outline-none pr-8"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword((v) => !v)}
                       aria-label="Toggle password visibility"
-                      className="absolute right-3 text-[#7b756e] hover:text-[#1c1a17] transition-colors p-1 flex items-center justify-center bg-transparent border-none cursor-pointer"
+                      className="absolute right-3 text-[#7b756e] hover:text-black transition-colors p-1 flex items-center justify-center bg-transparent border-none cursor-pointer"
                     >
                       <span
                         className="material-symbols-outlined text-[18px]"
-                        style={{ fontVariationSettings: "'FILL' 0, 'wght' 300" }}
+                        style={{ fontVariationSettings: "'FILL' 0, 'wght' 400" }}
                       >
                         {showPassword ? "visibility_off" : "visibility"}
                       </span>
