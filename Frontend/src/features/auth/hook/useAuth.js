@@ -1,5 +1,6 @@
 import { setError, setLoading , setUser } from "../state/auth.slice";
-import { login, register ,getMe } from "../service/auth.api";
+import { login, register ,getMe , logout } from "../service/auth.api";
+import { setCart } from "../../cart/state/cart.slice";
 import {useDispatch} from "react-redux"
 
 
@@ -39,8 +40,16 @@ export const useAuth = () =>{
         }
 
     }
+    
+    async function handleLogout() {
+
+        await logout()
+        dispatch(setUser(null))
+        dispatch(setCart({ items: [], totalPrice: null, currency: null }))
+
+    }
 
 
-    return {handleRegister , handleLogin , handleGetMe}
+    return {handleRegister , handleLogin , handleGetMe , handleLogout}
 
 }

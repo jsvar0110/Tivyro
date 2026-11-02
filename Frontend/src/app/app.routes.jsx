@@ -11,16 +11,17 @@ import Cart from "../features/cart/pages/Cart.jsx"
 import Applayout from "./Applayout.jsx"
 import OrderSuccess from "../features/cart/pages/OrderSuccess.jsx"
 import GenderCollection from "../features/products/pages/GenderCollection.jsx"
+import GuestOnly from "../features/auth/components/GuestOnly.jsx"
 
 export const routes = createBrowserRouter([
     {
         path: '/register',
-        element: <Register />
+        element: <GuestOnly><Register /></GuestOnly>
     }
     ,
     {
         path: '/login',
-        element: <Login />
+        element: <GuestOnly><Login /></GuestOnly>
     },
 
     {

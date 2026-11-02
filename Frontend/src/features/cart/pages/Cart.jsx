@@ -19,6 +19,7 @@ const Cart = () => {
     const {
         handleGetCart,
         handleIncrementCartItem,
+        handleDecrementCartItem,
         handleCreateCartOrder,
         handleVerifyCartOrder,
         handleRemoveCartItem,
@@ -28,8 +29,6 @@ const Cart = () => {
     const { error, isLoading, Razorpay } = useRazorpay()
     const user = useSelector(state => state.user)
 
-    // Local quantity handling
-    const [quantities, setQuantities] = useState({})
     const [isPromoOpen, setIsPromoOpen] = useState(false)
     const [promoCode, setPromoCode] = useState('')
     const [isClearOpen, setIsClearOpen] = useState(false)
@@ -39,12 +38,6 @@ const Cart = () => {
         handleGetCart()
     }, [])
 
-    const changeQty = (id, delta) => {
-        setQuantities(prev => ({
-            ...prev,
-            [id]: Math.max(1, (prev[id] ?? 1) + delta),
-        }))
-    }
 
     const confirmClear = async () => {
         setIsClearing(true)
@@ -198,7 +191,7 @@ const Cart = () => {
                             >
                                 No Pieces Reserved
                             </h1>
-                            <p className="text-sm text-gray-500 max-w-md leading-relaxed mb-8">
+                            <p className="text-base text-gray-500 max-w-max leading-relaxed mb-8">
                                 Your shopping bag is currently empty. Explore our latest arrivals and curated collections to find your perfect pieces.
                             </p>
                             <Link
@@ -288,7 +281,7 @@ const Cart = () => {
                                             const variant = getVariantDetails(product, variantId) || product?.variants?.[0] || {}
                                             const image = getDisplayImage(product, variant)
                                             const attributes = variant.attributes || {}
-                                            const qty = quantities[item._id] ?? item.quantity ?? 1
+                                            const qty = item.quantity ?? 1
                                             const unitPrice = item.price?.amount ?? variant?.price?.amount ?? product?.price?.amount ?? 0
                                             const stock = variant?.stock
                                             const variantPrice = variant?.price
@@ -390,8 +383,9 @@ const Cart = () => {
                                                             {/* Stepper */}
                                                             <div className="flex items-center border border-gray-300 bg-white">
                                                                 <button
-                                                                    onClick={() => changeQty(item._id, -1)}
-                                                                    className="w-8 h-8 flex items-center justify-center text-gray-700 hover:text-black hover:bg-gray-100 transition-colors border-none bg-transparent cursor-pointer"
+                                                                    onClick={() => handleDecrementCartItem({ productId: product?._id, variantId })}
+                                                                    disabled={qty <= 1}
+                                                                    className="w-8 h-8 flex items-center justify-center text-gray-700 hover:text-black hover:bg-gray-100 transition-colors border-none bg-transparent cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
                                                                     aria-label="Decrease quantity"
                                                                 >
                                                                     <span className="material-symbols-outlined text-[14px]">

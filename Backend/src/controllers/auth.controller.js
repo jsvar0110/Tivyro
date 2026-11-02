@@ -154,4 +154,18 @@ export const getMe = async (req, res) => {
 
 }
 
+
+
+export const logout = (req, res) => {
+
+    const { maxAge, ...clearOptions } = cookieOptions
+
+    res.clearCookie("token", clearOptions)
+
+    return res.status(200).json({
+        message: "Logged out successfully",
+        success: true
+    })
+
+}
 //Tivyro

@@ -1,10 +1,37 @@
-import React from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { Link } from 'react-router'
+import { Link, useNavigate } from 'react-router'
+import { useAuth } from '../../auth/hook/useAuth.js'
 
 const Nav = () => {
     const user = useSelector(state => state.auth.user)
     const cartItems = useSelector(state => state.cart?.items)
+    const { handleLogout } = useAuth()
+    const navigate = useNavigate()
+
+    const [isSettingsOpen, setIsSettingsOpen] = useState(false)
+    const settingsRef = useRef(null)
+
+    const onLogout = async () => {
+        setIsSettingsOpen(false)
+        await handleLogout()
+        navigate('/')
+    }
+
+    // Close settings dropdown on click outside
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (settingsRef.current && !settingsRef.current.contains(event.target)) {
+                setIsSettingsOpen(false)
+            }
+        }
+        if (isSettingsOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [isSettingsOpen])
 
     return (
         <>
@@ -21,18 +48,6 @@ const Nav = () => {
                 }
                 * { border-radius: 0px !important; }
             `}</style>
-
-            {/* Top announcement bar */}
-            {/* <aside style={{ fontFamily: "'Inter', sans-serif" }} className="w-full bg-black text-white py-2 px-6 text-[10px] font-semibold tracking-widest uppercase flex flex-col sm:flex-row items-center justify-between z-50">
-                <span>FREE DELIVERY ON ORDERS ABOVE ₹999</span>
-                <div className="flex items-center gap-3 mt-1 sm:mt-0 text-gray-300">
-                    <a href="#" className="hover:text-white transition-colors">DOWNLOAD APP</a>
-                    <span>|</span>
-                    <a href="#" className="hover:text-white transition-colors">TRACK ORDER</a>
-                    <span>|</span>
-                    <a href="#" className="hover:text-white transition-colors">HELP</a>
-                </div>
-            </aside> */}
 
             {/* Main Navbar */}
             <header className="w-full sticky top-0 z-[100] flex items-center justify-between px-6 md:px-16 h-20 bg-white border-b border-gray-200" style={{ fontFamily: "'Inter', sans-serif" }}>
@@ -52,7 +67,7 @@ const Nav = () => {
                 {/* RIGHT: Actions */}
                 <div className="flex items-center gap-6">
                     {/* Search */}
-                    <button className="flex items-center gap-1.5 text-gray-600 hover:text-black transition-colors">
+                    <button className="flex items-center gap-1.5 text-gray-600 hover:text-black transition-colors cursor-pointer bg-transparent border-none">
                         <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>search</span>
                         <span className="hidden md:inline text-[11px] font-semibold tracking-widest uppercase">SEARCH</span>
                     </button>
@@ -68,6 +83,60 @@ const Nav = () => {
                                     DASHBOARD
                                 </Link>
                             )}
+
+                            {/* Settings button with dropdown containing Logout */}
+                            <div className="relative" ref={settingsRef}>
+                                <button
+                                    onClick={() => setIsSettingsOpen(prev => !prev)}
+                                    aria-label="Settings"
+                                    title="Settings"
+                                    className="flex items-center justify-center p-1.5 text-gray-600 hover:text-black transition-opacity cursor-pointer bg-transparent border-none opacity-80 hover:opacity-100"
+                                >
+                                    <img
+                                        src="/set-mode.svg"
+                                        alt="Settings"
+                                        className="w-[18px] h-[18px] object-contain"
+                                    />
+                                </button>
+
+                                {/* Dropdown menu */}
+                                {isSettingsOpen && (
+                                    <div className="absolute right-0 top-full mt-2 w-48 bg-white border border-gray-200 shadow-xl py-1 z-50 animate-fadeIn">
+                                        <div className="px-4 py-2.5 border-b border-gray-100">
+                                            <p className="text-[11px] font-bold uppercase text-black tracking-wider truncate">
+                                                {user.fullname}
+                                            </p>
+                                            {user.email && (
+                                                <p className="text-[10px] text-gray-500 truncate mt-0.5">
+                                                    {user.email}
+                                                </p>
+                                            )}
+                                            <span className="inline-block mt-1 text-[9px] font-bold tracking-widest uppercase bg-gray-100 text-gray-700 px-2 py-0.5">
+                                                {user.role}
+                                            </span>
+                                        </div>
+
+                                        {user.role === 'seller' && (
+                                            <Link
+                                                to="/seller/dashboard"
+                                                onClick={() => setIsSettingsOpen(false)}
+                                                className="flex items-center gap-2.5 px-4 py-2 text-[11px] font-semibold tracking-widest uppercase text-gray-700 hover:text-black hover:bg-gray-50 transition-colors no-underline"
+                                            >
+                                                <span className="material-symbols-outlined text-[16px]">dashboard</span>
+                                                <span>Dashboard</span>
+                                            </Link>
+                                        )}
+
+                                        <button
+                                            onClick={onLogout}
+                                            className="w-full flex items-center gap-2.5 px-4 py-2.5 text-[11px] font-semibold tracking-widest uppercase text-red-600 hover:text-red-700 hover:bg-red-50 transition-colors border-none bg-transparent cursor-pointer text-left"
+                                        >
+                                            <span className="material-symbols-outlined text-[16px]">logout</span>
+                                            <span>Logout</span>
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     ) : (
                         <Link to="/login" className="flex items-center gap-1.5 text-gray-600 hover:text-black transition-colors no-underline">
@@ -81,6 +150,7 @@ const Nav = () => {
                         <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>shopping_bag</span>
                         <span className="text-[11px] font-semibold tracking-widest uppercase">CART ({cartItems?.length || 0})</span>
                     </Link>
+
                 </div>
             </header>
         </>

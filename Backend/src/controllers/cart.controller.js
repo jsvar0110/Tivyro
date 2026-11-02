@@ -152,7 +152,7 @@ export const incrementCartItemQuantity = async (req, res) => {
     }
 
     await cartModel.findOneAndUpdate(
-        { user: req.user._id, "items.product": productId, "items.variant": variantId },
+        { user: req.user._id, items: { $elemMatch: { product: productId, variant: variantId } } },
         { $inc: { "items.$.quantity": 1 } },
         { new: true }
     )
@@ -164,6 +164,35 @@ export const incrementCartItemQuantity = async (req, res) => {
 }
 
 
+
+export const decrementCartItemQuantity = async (req, res) => {
+
+    const { productId, variantId } = req.params
+
+    const cart = await cartModel.findOne({ user: req.user._id })
+
+    if (!cart) {
+        return res.status(404).json({ message: "Cart not found", status: false })
+    }
+
+    const item = cart.items.find(i => i.product.toString() === productId && i.variant?.toString() === variantId)
+
+    if (!item) {
+        return res.status(404).json({ message: "Item not found in cart", status: false })
+    }
+
+    if (item.quantity <= 1) {
+        return res.status(400).json({ message: "Quantity can't go below 1. Remove the item instead.", status: false })
+    }
+
+    await cartModel.findOneAndUpdate(
+        { user: req.user._id, items: { $elemMatch: { product: productId, variant: variantId } } },
+        { $inc: { "items.$.quantity": -1 } },
+        { new: true }
+    )
+
+    return res.status(200).json({ message: "Cart item decremented successfully", status: true })
+}
 
 export const createOrderController = async (req, res) => {
 
