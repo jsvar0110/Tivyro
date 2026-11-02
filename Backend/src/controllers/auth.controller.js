@@ -3,6 +3,15 @@ import jwt from 'jsonwebtoken'
 import { config } from "../config/config.js";
 
 
+const cookieOptions = {
+    httpOnly: true,
+    secure: config.NODE_ENV === "production",
+    sameSite: config.NODE_ENV === "production" ? "none" : "lax",
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+    path: "/"
+}
+
+
 async function sendTokenResponse(user, res, message) {
 
     const token = jwt.sign({
@@ -11,7 +20,7 @@ async function sendTokenResponse(user, res, message) {
         expiresIn: "7d"
     })
 
-    res.cookie("token", token)
+    res.cookie("token", token, cookieOptions)
 
     res.status(200).json({
         message,
@@ -74,6 +83,10 @@ export const login = async (req, res) => {
         return res.status(400).json({ message: "invalid email or password" })
     }
 
+    if (!user.password) {
+        return res.status(400).json({ message: "This account uses Google sign-in. Please continue with Google." })
+    }
+
     const isMatch = await user.comparePassword(password)
 
     if (!isMatch) {
@@ -86,33 +99,40 @@ export const login = async (req, res) => {
 
 export const googleCallback = async (req, res) => {
 
-    const { id, displayName, emails, photos } = req.user
-    const email = emails[0].value
-    const profilePic = photos[0].value
+    const FE = config.FRONTEND_URL
 
-    let user = await userModel.findOne({
-        email
-    })
+    try {
 
-    if (!user) {
-        user = await userModel.create({
-            email,
-            googleId: id,
-            fullname: displayName
-        })
+        const { id, displayName, emails } = req.user
+        const email = emails?.[0]?.value?.toLowerCase()
+
+        if (!email || emails[0].verified === false) {
+            return res.redirect(`${FE}/login?error=google_email_unverified`)
+        }
+
+        let user = await userModel.findOne({ googleId: id }) || await userModel.findOne({ email })
+
+        if (!user) {
+            // brand-new account: role comes from the OAuth state sent by the Register page
+            const role = req.query.state === "seller" ? "seller" : "buyer"
+            user = await userModel.create({ email, googleId: id, fullname: displayName, role })
+        } else if (!user.googleId) {
+            // account existed with email/password: link Google to it
+            user.googleId = id
+            await user.save()
+        } else if (user.googleId !== id) {
+            return res.redirect(`${FE}/login?error=google_account_mismatch`)
+        }
+
+        const token = jwt.sign({ id: user._id }, config.JWT_SECRET, { expiresIn: "7d" })
+        res.cookie("token", token, cookieOptions)
+
+        return res.redirect(user.role === "seller" ? `${FE}/seller/dashboard` : `${FE}/`)
+
+    } catch (error) {
+        console.error("Google Auth Error:", error)
+        return res.redirect(`${FE}/login?error=google_auth_failed`)
     }
-
-
-    const token = jwt.sign({
-        id: user._id
-    }, config.JWT_SECRET, {
-        expiresIn: "7d"
-    })
-
-    res.cookie("token", token)
-
-    res.redirect("http://localhost:5173/")
-
 }
 
 

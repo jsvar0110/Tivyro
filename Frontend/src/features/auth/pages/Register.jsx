@@ -1,21 +1,22 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useAuth } from "../hook/useAuth";
-import { useNavigate } from "react-router";
+import { useNavigate, Link } from "react-router";
 import ContinueWithGoogle from "../components/ContinueWithGoogle";
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   Tivyro — Register Page (v2)
-   Editorial split-panel · Dark / Light mode toggle
-   Fonts: Cormorant Garamond (editorial headings) + Inter + Geist
-   Tailwind CSS + Aurelian Dark design-system tokens
+   Tivyro — Redesigned Editorial Register Page
+   Matches the luxury aesthetic of Login.jsx:
+   - Shared warm sandstone palette (#ded8d0) and clean model backdrop
+   - Top navigation with Men, Women, New Arrivals, Collections, Sale badge
+   - Left hero section with editorial serif headline
+   - Right elevated white card with Full Name, Email, Phone, Password,
+     Buyer/Seller checkbox, and Google sign-up
+   - Fully preserves all core registration functionality and state handlers
 ───────────────────────────────────────────────────────────────────────────── */
 
 export default function Register() {
   const { handleRegister } = useAuth();
   const navigate = useNavigate();
-
-  /* ── Theme state ── */
-  const [dark, setDark] = useState(true);
 
   /* ── Form state ── */
   const [formData, setFormData] = useState({
@@ -25,17 +26,25 @@ export default function Register() {
     password: "",
     isSeller: false,
   });
-  const [showPassword, setShowPw] = useState(false);
+
+  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   function handleChange(e) {
     const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: type === "checkbox" ? checked : value }));
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+    if (errorMessage) setErrorMessage("");
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+    setErrorMessage("");
+
     try {
       await handleRegister({
         email: formData.email,
@@ -45,491 +54,391 @@ export default function Register() {
         fullname: formData.fullName,
       });
       navigate("/");
+    } catch (error) {
+      console.error("Registration failed", error);
+      setErrorMessage(
+        error?.response?.data?.message || "Registration failed. Please check your details and try again."
+      );
     } finally {
       setIsLoading(false);
     }
   };
 
-  /* ── Theme tokens ── */
-  const d = dark;
-  const tk = {
-    pageBg:          d ? "#121317" : "#fbf9f6",
-    cardBg:          d ? "#1c1c1c" : "#ffffff",
-    cardBorder:      d ? "#252525" : "#e5e1db",
-    newText:        d ? "#f5c342" : "#ffffff",
-    bgGold :       d ? "rgb(179 154 91 / 6%)" : "rgb(225 180 65 / 40%)",
-    goldWhite :      d ? "#ffffff" : "#000000" , 
-    inputBg:         d ? "#1a1a1a" : "#f5f3f0",
-    inputBorder:     d ? "#2c2c2c" : "#ddd8d0",
-    focusColor:      d ? "#f5c342" : "rgb(201, 169, 110)",
-    text:            d ? "#e3e2e7" : "#1b1c1a",
-    textMuted:       d ? "#d2c5ae" : "#5a5650",
-    textSubtle:      d ? "#9b8f7b" : "#9b9490",
-    golden:          d ? "#f5c342" : "rgb(255, 187, 0)",
-    divider:         d ? "#252525" : "#e5e1db",
-    headerBg:        d ? "rgba(18,19,23,0.92)" : "rgba(251,249,246,0.92)",
-    footerBg:        d ? "#0d0e12" : "#f5f3f0",
-    orb1:            d ? "rgba(245,195,66,0.07)" : "rgba(212,167,44,0.11)",
-    orb2:            d ? "rgba(245,195,66,0.045)" : "rgba(212,167,44,0.075)",
-    sellerRowBg:     d ? "rgba(245,195,66,0.04)"  : "rgba(212,167,44,0.06)",
-    sellerRowBorder: d ? "rgba(245,195,66,0.12)"  : "rgba(212,167,44,0.20)",
-    glowFocus:       d ? "rgba(245,195,66,0.18)"  : "rgba(212,167,44,0.18)",
-    imgOpacity:      d ? 0.42 : 0.92,
-    imgBlend:        d ? "luminosity" : "normal",
-    imgFilter:       d ? "none" : "sepia(10%) brightness(0.9)",
-    panelGrad:       d
-      ? "linear-gradient(to right, transparent 55%, #121317 100%), linear-gradient(to top, rgba(18,19,23,0.72) 0%, rgba(18,19,23,0.1) 55%, transparent 100%)"
-      : "linear-gradient(to right, transparent 55%, #fbf9f6 100%), linear-gradient(to top, rgba(27,24,20,0.55) 0%, rgba(27,24,20,0.08) 55%, transparent 100%)",
-    heroText:        d ? "#e3e2e7" : "#ffffff",
-    heroSub:         d ? "rgba(210,197,174,0.72)" : "rgba(255,255,255,0.72)",
-    heroStatSub:     d ? "rgba(210,197,174,0.60)" : "rgba(255,255,255,0.60)",
-    cardGlow:        d ? "rgba(245,195,66,0.09)" : "rgb(229 211 165 / 31%)",
-    submitBg:        d ? "#f5c342" : "#1b1c1a",
-    submitText:      d ? "#111111" : "#fbf9f6",
-    submitHoverBg:   d ? "#e8b63a" : "#2d2e2c",
-    sheen: d
-      ? "linear-gradient(90deg, transparent 0%, rgba(245,195,66,0.35) 40%, rgba(245,195,66,0.60) 50%, rgba(245,195,66,0.35) 60%, transparent 100%)"
-      : "linear-gradient(90deg, transparent 0%, rgba(201,169,110,0.35) 40%, rgba(201,169,110,0.55) 50%, rgba(201,169,110,0.35) 60%, transparent 100%)",
-  };
-
-  /* ── Input style helpers ── */
-  const inputBase = {
-    backgroundColor: tk.inputBg,
-    border: `1px solid ${tk.inputBorder}`,
-    color: tk.text,
-    fontFamily: "'Inter', sans-serif",
-    borderRadius: "0.25rem",
-    outline: "none",
-    width: "100%",
-    fontSize: "0.875rem",
-    lineHeight: "1.5",
-    padding: "0.42rem 1rem 0.42rem 2.2rem",
-    transition: "border-color 0.2s, box-shadow 0.2s",
-  };
-
-  const onFocus = (e) => {
-    e.target.style.borderColor = tk.focusColor;
-    e.target.style.boxShadow = `0 0 0 3px ${tk.glowFocus}`;
-  };
-  const onBlur = (e) => {
-    e.target.style.borderColor = tk.inputBorder;
-    e.target.style.boxShadow = "none";
-  };
-
   return (
     <>
-      {/* Google Fonts */}
+      {/* Editorial and Sans Google Fonts */}
       <link
-        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500;600&family=Geist:wght@400;500;600&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap"
         rel="stylesheet"
       />
 
-      <style>{`
-        @keyframes orbFloat {
-          0%,100% { transform: translateY(0) scale(1); }
-          50%     { transform: translateY(-22px) scale(1.03); }
-        }
-        @keyframes revealUp {
-          from { opacity:0; transform:translateY(24px) scale(0.98); }
-          to   { opacity:1; transform:translateY(0) scale(1); }
-        }
-        @keyframes barGrow {
-          from { width:0; }
-          to   { width:2.25rem; }
-        }
-        @keyframes sheenSlide {
-          0%   { background-position:-200% center; }
-          100% { background-position: 300% center; }
-        }
-        @keyframes spin { to { transform:rotate(360deg); } }
-        @keyframes regPulse { 0%,100%{opacity:1} 50%{opacity:.35} }
-
-        .reg-root  { transition: background-color .35s, color .35s; }
-        .reg-panel { animation: revealUp .5s cubic-bezier(.22,1,.36,1) both; }
-        .reg-hero  { animation: revealUp .55s .08s cubic-bezier(.22,1,.36,1) both; }
-        .reg-bar   { animation: barGrow  .65s .28s cubic-bezier(.22,1,.36,1) both; }
-        .reg-orb1  { animation: orbFloat 9s  ease-in-out infinite; }
-        .reg-orb2  { animation: orbFloat 13s ease-in-out infinite reverse; }
-        .reg-dot   { animation: regPulse 2.4s ease-in-out infinite; }
-
-        .reg-spinner {
-          width:16px; height:16px;
-          border-radius:50%;
-          animation:spin .7s linear infinite;
-          flex-shrink:0;
-        }
-
-        .reg-sheen {
-          background-size: 200% auto;
-          animation: sheenSlide 4s linear infinite;
-        }
-
-        .reg-checkbox {
-          appearance:none; -webkit-appearance:none;
-          width:17px; height:17px;
-          border-radius:3px;
-          cursor:pointer;
-          position:relative;
-          flex-shrink:0;
-          transition: background .18s, border-color .18s;
-        }
-        .reg-checkbox:checked::after {
-          content:'';
-          position:absolute;
-          left:4px; top:1px;
-          width:7px; height:11px;
-          border:2px solid #111;
-          border-top:none; border-left:none;
-          transform:rotate(42deg);
-        }
-        .reg-checkbox:focus { outline: 2px solid rgba(245,195,66,.3); outline-offset:2px; }
-
-        .reg-cta { transition: box-shadow .22s, transform .18s, background-color .2s, color .2s; }
-        .reg-cta:not(:disabled):hover  { transform:translateY(-1px); }
-        .reg-cta:not(:disabled):active { transform:translateY(0); }
-
-        .reg-toggle-btn { transition: background-color .3s, color .3s; }
-      `}</style>
-
       <div
-        className="reg-root h-screen flex flex-col overflow-hidden"
-        style={{ backgroundColor: tk.pageBg, color: tk.text, fontFamily: "'Inter', sans-serif" }}
+        className="min-h-screen w-full relative flex flex-col justify-between overflow-x-hidden select-none bg-[#ded8d0]"
+        style={{ fontFamily: "'Inter', sans-serif" }}
       >
-        {/* ── Ambient orbs ── */}
-        <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-          <div className="reg-orb1 absolute" style={{ top:"-15%", right:"-8%", width:"50vw", height:"50vw", borderRadius:"50%", background:`radial-gradient(circle,${tk.orb1} 0%,transparent 70%)`, filter:"blur(40px)" }} />
-          <div className="reg-orb2 absolute" style={{ bottom:"-18%", left:"-8%", width:"42vw", height:"42vw", borderRadius:"50%", background:`radial-gradient(circle,${tk.orb2} 0%,transparent 70%)`, filter:"blur(48px)" }} />
+        {/* ── Background Layer with Model Photograph & Sandstone Gradient ── */}
+        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+          <img
+            src="/login-bg-model.jpg"
+            alt="Tivyro Models"
+            className="w-full h-full object-cover object-[58%_center] lg:object-[54%_center]"
+            onError={(e) => {
+              e.currentTarget.src = "/login-model.png";
+            }}
+          />
+
+          {/* Left gradient blending seamlessly into the warm sandstone background */}
+          <div
+            className="absolute inset-0 hidden sm:block"
+            style={{
+              background:
+                "linear-gradient(to right, #ded8d0 0%, #ded8d0 2%, rgba(222,216,208,0.85) 14%, rgba(222,216,208,0.2) 42%, transparent 80%)",
+            }}
+          />
+
+          {/* Mobile backdrop tint for card contrast */}
+          <div className="absolute inset-0 sm:hidden bg-[#ded8d0]/75 backdrop-blur-[2px]" />
         </div>
 
-        {/* ── Header ── */}
-        <header
-          className="sticky top-0 z-50 border-b backdrop-blur-md px-6"
-          style={{ backgroundColor: tk.headerBg, borderColor: tk.divider }}
-        >
-          <div className="max-w-[1280px] mx-auto h-14 flex items-center justify-between">
-            <span style={{ fontFamily:"'Cormorant Garamond', serif", color: tk.goldWhite, fontSize:"20px", fontWeight:"500", letterSpacing:"0.12em", cursor:"pointer" }}>
-              Tivyro.
-            </span>
-            <div className="flex items-center gap-4">
-              {/* Theme toggle */}
-              <button
-                id="reg-theme-toggle"
-                aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
-                onClick={() => setDark(v => !v)}
-                className="reg-toggle-btn flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-medium tracking-wide cursor-pointer border"
-                style={{ backgroundColor: tk.cardBg, borderColor: tk.cardBorder, color: tk.textMuted, fontFamily:"'Geist', sans-serif" }}
+        {/* ── Top Navigation Bar ── */}
+        <header className="relative z-20 w-full px-6 sm:px-10 lg:px-14 pt-6 sm:pt-8 flex items-center justify-between">
+          <div className="flex items-center gap-10">
+            {/* Logo */}
+            <Link
+              to="/"
+              className="flex items-center gap-2.5 text-[#1c1a17] no-underline group"
+              aria-label="Tivyro Home"
+            >
+              {/* Stylized Tivyro Emblem */}
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                className="transition-transform group-hover:scale-105"
               >
-                <span>{dark ? "☀️" : "🌙"}</span>
-                <span>{dark ? "Light" : "Dark"}</span>
-              </button>
+                <path d="M3 5.5L10.5 5.5L7 18.5H3L3 5.5Z" fill="#1c1a17" />
+                <path d="M10.5 5.5L21 5.5L16.5 11.5H8.5L10.5 5.5Z" fill="#1c1a17" />
+              </svg>
+              <span className="text-xl font-bold tracking-tight text-[#1c1a17]">
+                Tivyro
+              </span>
+            </Link>
 
-              <a
-                href="/login"
-                className="text-sm font-medium tracking-[0.04em] no-underline transition-colors duration-200"
-                style={{ color: tk.textMuted, fontFamily:"'Geist', sans-serif" }}
-                onMouseEnter={e => e.target.style.color = tk.golden}
-                onMouseLeave={e => e.target.style.color = tk.textMuted}
+            {/* Nav Links */}
+            {/* <nav className="hidden md:flex items-center gap-7 text-sm font-medium text-[#2d2924]">
+              <Link
+                to="/men"
+                className="text-[#2d2924] hover:text-black transition-colors no-underline"
               >
-                Sign In
-              </a>
-            </div>
+                Men
+              </Link>
+              <Link
+                to="/women"
+                className="text-[#2d2924] hover:text-black transition-colors no-underline"
+              >
+                Women
+              </Link>
+              <Link
+                to="/"
+                className="text-[#2d2924] hover:text-black transition-colors no-underline"
+              >
+                New Arrivals
+              </Link>
+              <Link
+                to="/"
+                className="text-[#2d2924] hover:text-black transition-colors no-underline"
+              >
+                Collections
+              </Link>
+              <Link
+                to="/"
+                className="bg-[#fae1d3] text-[#9c431b] hover:bg-[#f6d4c2] px-3.5 py-1 rounded-full text-xs font-semibold tracking-wide transition-colors no-underline"
+              >
+                Sale
+              </Link>
+            </nav> */}
           </div>
         </header>
 
-        {/* ── Main ── */}
-        <main className="flex-1 flex overflow-hidden relative z-10 min-h-0">
+        {/* ── Main Hero Section ── */}
+        <main className="relative z-10 flex-1 w-full max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-14 py-8 lg:py-4 flex flex-col lg:flex-row items-center justify-between gap-10">
+          {/* Left Column: Editorial Headline & Shop CTA */}
+          <div className="w-full lg:w-1/2 flex flex-col justify-center items-start pt-2 lg:pt-0">
+            {/* Eyebrow */}
+            <p className="text-[11px] font-semibold tracking-[0.24em] text-[#4d4841] uppercase mb-3 sm:mb-4">
+              Fashion Meets Comfort
+            </p>
 
-          {/* LEFT: Editorial image panel */}
-          <div className="hidden lg:block lg:w-[46%] relative reg-hero overflow-hidden">
-            <div className="absolute inset-0 z-0">
-              <img
-                src={dark ? "/Tivyro-dark.png" : "/Tivyro.png"}
-                alt="Tivyro Fashion Editorial"
-                style={{ width:"100%", height:"100%", objectFit:"cover", opacity: tk.imgOpacity, mixBlendMode: tk.imgBlend, filter: tk.imgFilter, transition:"opacity .4s, filter .4s" }}
-              />
-              <div className="absolute inset-0" style={{ background: tk.panelGrad }} />
-            </div>
+            {/* Main Headline */}
+            <h1
+              className="text-[44px] sm:text-6xl lg:text-[72px] leading-[1.04] text-[#1c1a17] font-serif italic mb-4 sm:mb-5 tracking-normal font-normal"
+              style={{
+                fontFamily:
+                  "'Cormorant Garamond', 'Playfair Display', Georgia, serif",
+              }}
+            >
+              Discover
+              <br />
+              Your Style
+            </h1>
 
-            {/* Panel content */}
-            <div className="relative z-10 flex flex-col justify-between h-full px-12 py-10">
-              {/* Badge */}
-              <div
-                className="inline-flex items-center gap-2 px-3 py-1 rounded-full w-fit"
-                style={{ border:`2px solid ${tk.golden}4d`, backgroundColor:`${tk.bgGold}` }}
-              >
-                <span className="reg-dot w-1.5 h-1.5 rounded-full inline-block" style={{ backgroundColor: tk.bgGold }} />
-                <span className="text-xs font-semibold tracking-[0.18em] uppercase" style={{ color: tk.newText, fontFamily:"'Geist', sans-serif" }}>
-                  New Collection
-                </span>
-              </div>
+            {/* Subtext */}
+            <p className="text-sm sm:text-[15px] leading-relaxed text-[#544f47] mb-6 sm:mb-8 max-w-[340px]">
+              Trendy apparel, timeless pieces, and seasonal collections — all in
+              one place.
+            </p>
 
-              {/* Bottom copy */}
-              <div className="flex flex-col gap-5">
-                <h2
-                  className="font-light leading-[1.08] mb-4"
-                  style={{ fontFamily:"'Cormorant Garamond', serif", fontSize:"clamp(2.4rem,3.6vw,3.2rem)", color: tk.heroText }}
-                >
-                  Redefine Your<br />
-                  <em style={{ color: tk.golden }}>Aesthetic.</em>
-                </h2>
-                
-                <div className="flex gap-7">
-                  {[{ value:"50K+", label:"Members" }, { value:"2K+", label:"Brands" }, { value:"100%", label:"Curated" }].map(s => (
-                    <div key={s.label}>
-                      <p className="text-xl font-bold" style={{ color: tk.golden, fontFamily:"'Inter', sans-serif" }}>{s.value}</p>
-                      <p className="text-[11px] tracking-[0.1em] uppercase mt-0.5" style={{ color: tk.heroStatSub, fontFamily:"'Geist', sans-serif" }}>{s.label}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
+            {/* Shop Button */}
+            {/* <Link
+              to="/"
+              className="inline-flex items-center gap-2.5 border border-[#23201d] text-[#23201d] hover:bg-[#23201d] hover:text-white px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-200 no-underline shadow-sm"
+            >
+              <span>Shop Collection</span>
+              <span className="text-base leading-none">→</span>
+            </Link> */}
+
+            {/* Carousel Navigation Indicators */}
+            <div className="hidden sm:flex items-center gap-2 mt-10 sm:mt-14">
+              <span className="w-8 h-1.5 bg-white rounded-full shadow-sm" />
+              <span className="w-5 h-1.5 bg-black/25 rounded-full" />
             </div>
           </div>
 
-          {/* RIGHT: Form panel */}
-          <div
-            className="w-full lg:w-[54%] flex flex-col items-center justify-center overflow-y-auto relative z-10 px-6 sm:px-10 lg:px-12 py-4"
-            style={{ backgroundColor: tk.pageBg }}
-          >
-            <div className="reg-panel w-full max-w-[430px]">
-
-              {/* Mobile brand mark */}
-              <div className="lg:hidden mb-6">
-                <span className="text-sm tracking-[0.3em] uppercase" style={{ fontFamily:"'Cormorant Garamond', serif", color: tk.golden }}>
-                  Tivyro.
-                </span>
-              </div>
-
-              {/* Card */}
-              <div
-                className="relative rounded-lg px-6 py-5"
+          {/* Right Column: Floating Register Card */}
+          <div className="w-full lg:w-auto flex justify-center lg:justify-end my-4">
+            <div
+              className="w-full max-w-[430px] bg-white rounded-[28px] sm:rounded-[32px] p-6 sm:p-8 shadow-[0_24px_50px_rgba(25,20,15,0.09),0_2px_8px_rgba(0,0,0,0.03)] border border-white/80"
+              style={{ backdropFilter: "blur(8px)" }}
+            >
+              {/* Card Title */}
+              <h2
+                className="text-[28px] sm:text-[32px] font-medium text-[#1c1a17] tracking-tight leading-tight mb-1.5"
                 style={{
-                  backgroundColor: tk.cardBg,
-                  border: `1px solid ${tk.cardBorder}`,
-                  boxShadow: dark
-                    ? "0 28px 56px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.03)"
-                    : "0 12px 40px rgba(27,24,20,0.10), 0 0 0 1px rgba(27,24,20,0.04)",
-                  transition: "background-color .35s, border-color .35s, box-shadow .35s",
+                  fontFamily:
+                    "'Cormorant Garamond', 'Playfair Display', Georgia, serif",
                 }}
               >
-                {/* Sheen line */}
-                <div
-                  aria-hidden="true"
-                  className="reg-sheen absolute top-0 left-0 right-0 h-[1px] rounded-t-lg"
-                  style={{ background: tk.sheen }}
-                />
+                Create Account
+              </h2>
 
-                {/* Golden glow */}
-                <div
-                  aria-hidden="true"
-                  className="absolute top-0 left-1/2 -translate-x-1/2 w-4/5 h-28 pointer-events-none"
-                  style={{ background:`radial-gradient(ellipse at center, ${tk.cardGlow} 0%, transparent 70%)` }}
-                />
+              {/* Card Subtitle */}
+              <p className="text-xs sm:text-[13px] text-[#635d55] leading-relaxed mb-5">
+                Join Tivyro today and start shopping exclusive fashion collections.
+              </p>
 
-                {/* ── Card Header ── */}
-                <div className="mb-1.5 text-center relative z-[1]">
-                  {/* <div
-                    className="inline-flex items-center justify-center w-9 h-9 rounded-full mb-2"
-                    style={{ border:`1px solid ${tk.golden}40`, backgroundColor:`${tk.golden}18` }}
-                  >
-                    <span className="material-symbols-outlined" style={{ color: tk.golden, fontSize:"17px" }}>person_add</span>
-                  </div> */}
+              {/* Error messages */}
+              {errorMessage && (
+                <div className="mb-4 p-3 rounded-lg bg-red-50 border border-red-200 text-xs text-red-700 flex items-center gap-2">
+                  <span className="material-symbols-outlined text-[16px] text-red-600">
+                    error
+                  </span>
+                  <span>{errorMessage}</span>
+                </div>
+              )}
 
-                  <p className="text-[10px] font-semibold tracking-[0.2em] uppercase mb-1" style={{ color: tk.golden, fontFamily:"'Geist', sans-serif" }}>
-                    Join Tivyro
-                  </p>
-
-                  <h1
-                    className="font-light leading-[1.15] mb-2"
-                    style={{ fontFamily:"'Cormorant Garamond', serif", fontSize:"clamp(1.2rem,2.1vw,1.6rem)", color: tk.text }}
-                  >
-                    Create <em style={{ color: tk.golden , fontWeight:"500" , fontSize:"clamp(1.2rem,2.1vw,1.5rem)" }}>Account</em>
-                  </h1>
-
-                  <div className="reg-bar h-[2.5px] rounded-full mx-auto" style={{ backgroundColor: tk.golden }} />
+              {/* Form */}
+              <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+                {/* Full Name */}
+                <div>
+                  <div className="relative flex items-center border border-[#d9d4cd] rounded-xl px-3.5 py-2.5 focus-within:border-[#1c1a17] focus-within:ring-1 focus-within:ring-[#1c1a17] transition-all bg-[#ffffff]">
+                    <span
+                      className="material-symbols-outlined text-[#7b756e] text-[18px] mr-2.5 select-none pointer-events-none"
+                      style={{ fontVariationSettings: "'FILL' 0, 'wght' 300" }}
+                    >
+                      person
+                    </span>
+                    <input
+                      id="reg-fullName"
+                      name="fullName"
+                      type="text"
+                      placeholder="Full Name"
+                      required
+                      autoComplete="name"
+                      value={formData.fullName}
+                      onChange={handleChange}
+                      className="w-full text-sm text-[#1c1a17] placeholder:text-[#99948d] bg-transparent outline-none"
+                    />
+                  </div>
                 </div>
 
-                {/* ── Form ── */}
-                <form onSubmit={handleSubmit} className="relative z-[1] flex flex-col gap-2.5">
-
-                  {/* Full Name */}
-                  <FieldWrap label="Full Name" htmlFor="reg-fullName" tk={tk}>
-                    <FieldIcon icon="person" tk={tk} />
+                {/* Email Address */}
+                <div>
+                  <div className="relative flex items-center border border-[#d9d4cd] rounded-xl px-3.5 py-2.5 focus-within:border-[#1c1a17] focus-within:ring-1 focus-within:ring-[#1c1a17] transition-all bg-[#ffffff]">
+                    <span
+                      className="material-symbols-outlined text-[#7b756e] text-[18px] mr-2.5 select-none pointer-events-none"
+                      style={{ fontVariationSettings: "'FILL' 0, 'wght' 300" }}
+                    >
+                      mail
+                    </span>
                     <input
-                      id="reg-fullName" name="fullName" type="text"
-                      placeholder="Your full name" required autoComplete="name"
-                      value={formData.fullName} onChange={handleChange}
-                      style={inputBase} onFocus={onFocus} onBlur={onBlur}
+                      id="reg-email"
+                      name="email"
+                      type="email"
+                      placeholder="Email address"
+                      required
+                      autoComplete="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      className="w-full text-sm text-[#1c1a17] placeholder:text-[#99948d] bg-transparent outline-none"
                     />
-                  </FieldWrap>
+                  </div>
+                </div>
 
-                  {/* Email */}
-                  <FieldWrap label="Email Address" htmlFor="reg-email" tk={tk}>
-                    <FieldIcon icon="mail" tk={tk} />
+                {/* Contact Number */}
+                <div>
+                  <div className="relative flex items-center border border-[#d9d4cd] rounded-xl px-3.5 py-2.5 focus-within:border-[#1c1a17] focus-within:ring-1 focus-within:ring-[#1c1a17] transition-all bg-[#ffffff]">
+                    <span
+                      className="material-symbols-outlined text-[#7b756e] text-[18px] mr-2.5 select-none pointer-events-none"
+                      style={{ fontVariationSettings: "'FILL' 0, 'wght' 300" }}
+                    >
+                      call
+                    </span>
                     <input
-                      id="reg-email" name="email" type="email"
-                      placeholder="name@example.com" required autoComplete="email"
-                      value={formData.email} onChange={handleChange}
-                      style={inputBase} onFocus={onFocus} onBlur={onBlur}
+                      id="reg-contactNumber"
+                      name="contactNumber"
+                      type="tel"
+                      placeholder="Phone number"
+                      required
+                      autoComplete="tel"
+                      value={formData.contactNumber}
+                      onChange={handleChange}
+                      className="w-full text-sm text-[#1c1a17] placeholder:text-[#99948d] bg-transparent outline-none"
                     />
-                  </FieldWrap>
+                  </div>
+                </div>
 
-                  {/* Contact */}
-                  <FieldWrap label="Contact Number" htmlFor="reg-contact" tk={tk}>
-                    <FieldIcon icon="phone" tk={tk} />
+                {/* Password */}
+                <div>
+                  <div className="relative flex items-center border border-[#d9d4cd] rounded-xl px-3.5 py-2.5 focus-within:border-[#1c1a17] focus-within:ring-1 focus-within:ring-[#1c1a17] transition-all bg-[#ffffff]">
+                    <span
+                      className="material-symbols-outlined text-[#7b756e] text-[18px] mr-2.5 select-none pointer-events-none"
+                      style={{ fontVariationSettings: "'FILL' 0, 'wght' 300" }}
+                    >
+                      lock
+                    </span>
                     <input
-                      id="reg-contact" name="contactNumber" type="tel"
-                      placeholder="+91 98765 43210" required autoComplete="tel"
-                      value={formData.contactNumber} onChange={handleChange}
-                      style={inputBase} onFocus={onFocus} onBlur={onBlur}
-                    />
-                  </FieldWrap>
-
-                  {/* Password */}
-                  <FieldWrap label="Password" htmlFor="reg-password" tk={tk}>
-                    <FieldIcon icon="lock" tk={tk} />
-                    <input
-                      id="reg-password" name="password"
+                      id="reg-password"
+                      name="password"
                       type={showPassword ? "text" : "password"}
-                      placeholder="Create a strong password" required autoComplete="new-password"
-                      value={formData.password} onChange={handleChange}
-                      style={{ ...inputBase, paddingRight: "2.5rem" }}
-                      onFocus={onFocus} onBlur={onBlur}
+                      placeholder="Password"
+                      required
+                      autoComplete="new-password"
+                      value={formData.password}
+                      onChange={handleChange}
+                      className="w-full text-sm text-[#1c1a17] placeholder:text-[#99948d] bg-transparent outline-none pr-8"
                     />
                     <button
-                      type="button" aria-label="Toggle password visibility"
-                      onClick={() => setShowPw(v => !v)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 bg-transparent border-none cursor-pointer flex items-center p-0.5 transition-colors duration-200"
-                      style={{ color: tk.textSubtle }}
-                      onMouseEnter={e => e.currentTarget.style.color = tk.golden}
-                      onMouseLeave={e => e.currentTarget.style.color = tk.textSubtle}
+                      type="button"
+                      onClick={() => setShowPassword((v) => !v)}
+                      aria-label="Toggle password visibility"
+                      className="absolute right-3 text-[#7b756e] hover:text-[#1c1a17] transition-colors p-1 flex items-center justify-center bg-transparent border-none cursor-pointer"
                     >
-                      <span className="material-symbols-outlined" style={{ fontSize:"17px" }}>
+                      <span
+                        className="material-symbols-outlined text-[18px]"
+                        style={{ fontVariationSettings: "'FILL' 0, 'wght' 300" }}
+                      >
                         {showPassword ? "visibility_off" : "visibility"}
                       </span>
                     </button>
-                  </FieldWrap>
+                  </div>
+                </div>
 
-                  {/* Seller toggle */}
-                  <div
-                    className="flex items-center gap-3 px-13 py-1 rounded-lg"
-                    style={{ backgroundColor: tk.sellerRowBg, border:`1px solid ${tk.sellerRowBorder}` }}
+                {/* Buyer / Seller Checkbox Row */}
+                <div className="pt-0.5">
+                  <label
+                    htmlFor="reg-isSeller"
+                    className="flex items-center gap-2.5 p-2.5 rounded-xl border border-[#e5e1db] bg-[#faf9f7] cursor-pointer select-none hover:border-[#cfc9c0] transition-colors"
                   >
                     <input
-                      className="reg-checkbox"
-                      id="reg-isSeller" name="isSeller" type="checkbox"
-                      checked={formData.isSeller} onChange={handleChange}
-                      style={{ border:`1.5px solid ${formData.isSeller ? tk.golden : tk.inputBorder}`, backgroundColor: formData.isSeller ? tk.golden : "transparent" }}
+                      type="checkbox"
+                      id="reg-isSeller"
+                      name="isSeller"
+                      checked={formData.isSeller}
+                      onChange={handleChange}
+                      className="sr-only"
                     />
-                    <div>
-                      <label htmlFor="reg-isSeller" className="text-sm font-medium cursor-pointer block leading-snug" style={{ color: tk.text, fontFamily:"'Inter', sans-serif" }}>
-                        Register as Seller
-                      </label>
-                      <p className="text-[11px] mt-0.5" style={{ color: tk.textSubtle, fontFamily:"'Geist', sans-serif" }}>
-                        List products &amp; manage your store
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* CTA */}
-                  <button
-                    id="reg-submit"
-                    type="submit" disabled={isLoading}
-                    className="reg-cta w-full py-2 rounded text-sm font-semibold tracking-[0.08em] uppercase cursor-pointer flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed mt-0.5"
-                    style={{ backgroundColor: tk.submitBg, color: tk.submitText, border:"none", fontFamily:"'Geist', sans-serif" }}
-                    onMouseEnter={e => { if(!isLoading){ e.currentTarget.style.backgroundColor = tk.submitHoverBg; } }}
-                    onMouseLeave={e => { if(!isLoading){ e.currentTarget.style.backgroundColor = tk.submitBg; } }}
-                  >
-                    {isLoading ? (
-                      <>
-                        <div className="reg-spinner" style={{ border:`2.5px solid ${dark?"rgba(17,17,17,0.25)":"rgba(251,249,246,0.3)"}`, borderTopColor: dark?"#111":"#fbf9f6" }} />
-                        Creating account…
-                      </>
-                    ) : (
-                      <>
-                        Create Account
-                        <span className="material-symbols-outlined" style={{ fontSize:"17px" }}>arrow_forward</span>
-                      </>
-                    )}
-                  </button>
-
-                  {/* Divider */}
-                  <div className="flex items-center gap-3">
-                    <div className="flex-1 h-px" style={{ backgroundColor: tk.divider }} />
-                    <span className="text-[11px] tracking-[0.08em] uppercase" style={{ color: tk.textSubtle, fontFamily:"'Geist', sans-serif" }}>or</span>
-                    <div className="flex-1 h-px" style={{ backgroundColor: tk.divider }} />
-                  </div>
-
-                  {/* Google */}
-                  <ContinueWithGoogle />
-
-                  {/* Login link */}
-                  <p className="text-center text-sm" style={{ color: tk.textSubtle, fontFamily:"'Inter', sans-serif" }}>
-                    Already have an account?{" "}
-                    <a
-                      href="/login"
-                      className="font-medium no-underline transition-opacity duration-200"
-                      style={{ color: tk.golden }}
-                      onMouseEnter={(e) => { e.target.style.color = tk.golden;}}
-                      onMouseLeave={(e) => {e.target.style.opacity = "1"; e.target.style.color = tk.text}}
+                    <span
+                      className={`w-4 h-4 rounded flex items-center justify-center transition-all flex-shrink-0 border ${formData.isSeller
+                        ? "bg-[#23201d] border-[#23201d]"
+                        : "bg-white border-[#d9d4cd]"
+                        }`}
                     >
-                      Sign in
-                    </a>
-                  </p>
-                </form>
-              </div>
+                      {formData.isSeller && (
+                        <svg
+                          className="w-2.5 h-2.5 text-white"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="3.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                      )}
+                    </span>
+                    <div className="flex flex-col">
+                      <span className="text-xs sm:text-[13px] font-medium text-[#1c1a17] leading-tight">
+                        Register as Seller
+                      </span>
+                      <span className="text-[11px] text-[#78726a] leading-tight mt-0.5">
+                        List your clothing products &amp; manage orders
+                      </span>
+                    </div>
+                  </label>
+                </div>
+
+                {/* Submit Button */}
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="w-full bg-[#23201d] hover:bg-[#38342f] active:scale-[0.99] text-white py-3 rounded-xl text-sm font-semibold tracking-wide transition-all duration-200 flex items-center justify-center gap-2 shadow-sm disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer mt-1"
+                >
+                  {isLoading ? (
+                    <>
+                      <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      <span>Creating account…</span>
+                    </>
+                  ) : (
+                    "Create Account"
+                  )}
+                </button>
+
+                {/* Divider */}
+                <div className="flex items-center gap-3 my-0.5">
+                  <div className="flex-1 h-px bg-[#e5e1db]" />
+                  <span className="text-[11px] text-[#8c867f] uppercase tracking-wider font-medium">
+                    or continue with
+                  </span>
+                  <div className="flex-1 h-px bg-[#e5e1db]" />
+                </div>
+
+                {/* Google Sign-up with role passing */}
+                <ContinueWithGoogle
+                  role={formData.isSeller ? "seller" : "buyer"}
+                  theme="light"
+                />
+
+                {/* Already have an account link */}
+                <p className="text-center text-xs sm:text-[13px] text-[#635d55] mt-1 mb-0">
+                  Already have an account?{" "}
+                  <Link
+                    to="/login"
+                    className="font-semibold underline text-[#1c1a17] hover:opacity-80 transition-opacity ml-1 no-underline"
+                  >
+                    Sign in
+                  </Link>
+                </p>
+              </form>
             </div>
           </div>
         </main>
 
-        {/* ── Footer ── */}
-        <footer className="py-3 px-6 border-t relative z-10" style={{ backgroundColor: tk.footerBg, borderColor: tk.divider }}>
-          <div className="max-w-[1280px] mx-auto flex flex-row justify-between items-center flex-wrap gap-4">
-            <span className="text-[12px] font-medium" style={{ color:`${tk.golden}b0`, fontFamily:"'Geist', sans-serif" }}>
-              © 2024 Tivyro. All rights reserved.
-            </span>
-            <nav className="flex gap-5">
-              {["Privacy Policy", "Terms of Service", "Help"].map(link => (
-                <a
-                  key={link} href="#"
-                  className="text-[12px] font-medium no-underline opacity-70 transition-[color,opacity] duration-200 hover:opacity-100"
-                  style={{ color: tk.textSubtle, fontFamily:"'Geist', sans-serif" }}
-                  onMouseEnter={e => e.target.style.color = tk.golden}
-                  onMouseLeave={e => e.target.style.color = tk.textSubtle}
-                >
-                  {link}
-                </a>
-              ))}
-            </nav>
-          </div>
-        </footer>
+        {/* ── Subtle bottom buffer ── */}
+        <div className="relative z-10 pb-4" />
       </div>
     </>
-  );
-}
-
-/* ── Micro components ── */
-function FieldWrap({ label, htmlFor, tk, children }) {
-  return (
-    <div>
-      <label
-        htmlFor={htmlFor}
-        className="block mb-1 text-[10px] font-semibold tracking-[0.18em] uppercase"
-        style={{ color: tk.textSubtle, fontFamily:"'Geist', sans-serif" }}
-      >
-        {label}
-      </label>
-      <div className="relative">{children}</div>
-    </div>
-  );
-}
-
-function FieldIcon({ icon, tk }) {
-  return (
-    <span
-      className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
-      style={{ fontSize:"16px", color: tk.textSubtle }}
-    >
-      {icon}
-    </span>
   );
 }

@@ -16,10 +16,12 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ["buyer", "seller"],
         default: "buyer"
-    } ,
+    },
 
-    googleId : {
-        type : String 
+    googleId: {
+        type: String,
+        unique: true,
+        sparse: true
     }
 })
 

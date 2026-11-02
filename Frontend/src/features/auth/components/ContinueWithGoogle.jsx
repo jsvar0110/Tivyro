@@ -9,10 +9,11 @@ import React from "react";
  *  - Roboto Medium, 14 px (Google mandates Roboto)
  *  - Minimum 40 px touch-target height
  *  - 12 px side padding, centred content
- *  - Dark theme variant: #131314 background, #E3E3E3 text, #8E918F border
- *  - Hover / focus states that respect the dark theme and golden accent palette
+ *  - Dark & Light theme variants supported
  */
-export default function ContinueWithGoogle({ className = "" }) {
+export default function ContinueWithGoogle({ className = "", role = "buyer", theme = "dark" }) {
+  const isLight = theme === "light";
+
   return (
     <>
       {/* Google mandates Roboto font */}
@@ -25,26 +26,44 @@ export default function ContinueWithGoogle({ className = "" }) {
           justify-content: center;
           gap: 12px;
           width: 100%;
-          min-height: 36px;
-          padding: 0 12px;
-          border-radius: 4px;
-          border: 1px solid #8E918F;
-          background-color: #131314;
+          min-height: 44px;
+          padding: 0 16px;
+          border-radius: 12px;
+          border: 1px solid #d9d4cd;
+          background-color: #ffffff;
           cursor: pointer;
           text-decoration: none;
-          transition: background-color 0.2s ease, box-shadow 0.2s ease;
+          transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
           outline: none;
           user-select: none;
           box-sizing: border-box;
         }
+        .gsi-btn--dark {
+          border-radius: 4px;
+          border-color: #8E918F;
+          background-color: #131314;
+          min-height: 36px;
+        }
         .gsi-btn:hover {
+          background-color: #f7f6f4;
+          border-color: #c4beb5;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        .gsi-btn--dark:hover {
           background-color: rgba(255, 255, 255, 0.08);
           box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
         }
         .gsi-btn:focus-visible {
+          box-shadow: 0 0 0 3px rgba(28, 26, 23, 0.15);
+        }
+        .gsi-btn--dark:focus-visible {
           box-shadow: 0 0 0 3px rgba(245, 195, 66, 0.2);
         }
         .gsi-btn:active {
+          background-color: #f0eee9;
+          box-shadow: none;
+        }
+        .gsi-btn--dark:active {
           background-color: rgba(255, 255, 255, 0.12);
           box-shadow: none;
         }
@@ -61,14 +80,17 @@ export default function ContinueWithGoogle({ className = "" }) {
           font-size: 14px;
           font-weight: 500;
           letter-spacing: 0.0107143em;
-          color: #E3E3E3;
+          color: #2b2824;
           line-height: 1;
+        }
+        .gsi-btn--dark .gsi-btn__label {
+          color: #E3E3E3;
         }
       `}</style>
 
       <a
-        href="/api/auth/google"
-        className={`gsi-btn ${className}`}
+        href={`/api/auth/google?role=${role}`}
+        className={`gsi-btn ${isLight ? "" : "gsi-btn--dark"} ${className}`}
         role="button"
         aria-label="Continue with Google"
         id="btn-continue-with-google"
