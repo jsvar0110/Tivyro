@@ -17,8 +17,8 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
 app.use(cors({
-    origin: "http://localhost:5173",
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    origin: config.FRONTEND_URL,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     credentials: true
 }))
 
@@ -39,7 +39,11 @@ passport.use(new GoogleStrategy({
 
 
 app.get('/', (req, res) => {
-    res.status("Server is running")
+    res.status(200).send("Server is running")
+})
+
+app.get('/api/health', (req, res) => {
+    res.status(200).json({ status: "ok" })
 })
 
 app.use("/api/auth", authRouter)

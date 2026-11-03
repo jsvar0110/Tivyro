@@ -1,8 +1,9 @@
 import axios from 'axios'
 import { attachLoadingInterceptors } from '../../Shared/loading/requestTracker.js'
+import { API_URL } from '../../../config/api.js'
 
 const authApiInstance = axios.create({
-    baseURL : "/api/auth" ,
+    baseURL : `${API_URL}/api/auth` ,
     withCredentials : true
 })
 

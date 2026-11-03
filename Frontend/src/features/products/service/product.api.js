@@ -1,9 +1,10 @@
 import axios from "axios";
 import { attachLoadingInterceptors } from '../../Shared/loading/requestTracker.js'
+import { API_URL } from '../../../config/api.js'
 
 const productApiInstance = axios.create({
 
-    baseURL: "/api/products",
+    baseURL: `${API_URL}/api/products`,
     withCredentials: true,
 
 })

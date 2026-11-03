@@ -1,5 +1,5 @@
 import React from "react";
-
+import { API_URL } from '../../../config/api.js'
 /**
  * Google Sign-In button built to comply with Google's official branding
  * guidelines (https://developers.google.com/identity/branding-guidelines).
@@ -89,7 +89,7 @@ export default function ContinueWithGoogle({ className = "", role = "buyer", the
       `}</style>
 
       <a
-        href={`/api/auth/google?role=${role}`}
+        href={`${API_URL}/api/auth/google?role=${role}`}
         className={`gsi-btn ${isLight ? "" : "gsi-btn--dark"} ${className}`}
         role="button"
         aria-label="Continue with Google"
