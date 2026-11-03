@@ -233,7 +233,7 @@ const Cart = () => {
                             >
                                 No Pieces Reserved
                             </h1>
-                            <p className="text-2xl sm:text-base text-gray-500 max-w-md leading-relaxed mb-8">
+                            <p className="text-9xl sm:text-base text-gray-500 max-w-md leading-relaxed mb-8">
                                 Your shopping bag is currently empty. Explore our latest arrivals and curated collections to find your perfect pieces.
                             </p>
                             <Link
