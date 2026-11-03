@@ -1,9 +1,12 @@
 import axios from 'axios'
+import { attachLoadingInterceptors } from '../../Shared/loading/requestTracker.js'
 
 const authApiInstance = axios.create({
     baseURL : "/api/auth" ,
     withCredentials : true
 })
+
+attachLoadingInterceptors(authApiInstance)
 
 
 export async function register({email , contact ,password , fullname , isSeller }) {

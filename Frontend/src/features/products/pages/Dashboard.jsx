@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useProduct } from '../hooks/useProduct.js';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
+import Loader from '../../Shared/components/Loader.jsx';
+
 
 /* ── Theme Toggle Button ── */
 const ThemeToggle = ({ isDark, onToggle }) => (
@@ -121,7 +123,7 @@ const ImageCarousel = ({ images, title, isDark }) => {
 /* ── Product Card ── */
 const ProductCard = ({ product, isDark }) => {
   const navigate = useNavigate();
-  const { _id , price, title, description, images, createdAt } = product;
+  const { _id, price, title, description, images, createdAt } = product;
 
   const formattedDate = new Date(createdAt).toLocaleDateString('en-IN', {
     day: 'numeric', month: 'short', year: 'numeric'
@@ -133,11 +135,11 @@ const ProductCard = ({ product, isDark }) => {
         : price.currency === 'GBP' ? '£'
           : price.currency;
 
-  const cardBg      = isDark ? '#1c1a16' : '#fff';
-  const cardBorder  = isDark ? '#2e2b25' : '#ebe8e3';
-  const titleColor  = isDark ? '#f0ede6' : '#1b1c1a';
-  const descColor   = isDark ? '#8a8070' : '#7A6E63';
-  const metaColor   = isDark ? '#6b6258' : '#B5ADA3';
+  const cardBg = isDark ? '#1c1a16' : '#fff';
+  const cardBorder = isDark ? '#2e2b25' : '#ebe8e3';
+  const titleColor = isDark ? '#f0ede6' : '#1b1c1a';
+  const descColor = isDark ? '#8a8070' : '#7A6E63';
+  const metaColor = isDark ? '#6b6258' : '#B5ADA3';
 
   return (
     <article
@@ -245,21 +247,23 @@ const Dashboard = () => {
     });
   };
 
+  const [isLoadingProducts, setIsLoadingProducts] = useState(true);
+
   useEffect(() => {
-    handleGetSellerProduct();
+    handleGetSellerProduct().catch(console.error).finally(() => setIsLoadingProducts(false));
   }, []);
 
   const totalImages = (sellerProducts ?? []).reduce((sum, p) => sum + (p.images?.length ?? 0), 0);
 
   /* theme tokens */
-  const bg             = isDark ? '#12110e' : '#fbf9f6';
-  const headerColor    = isDark ? '#f0ede6' : '#1b1c1a';
-  const borderColor    = isDark ? '#2e2b25' : '#ebe8e3';
-  const backColor      = isDark ? '#6b6258' : '#B5ADA3';
-  const statsBg        = isDark ? 'rgba(201,169,110,0.06)' : 'transparent';
-  const statsValColor  = isDark ? '#f0ede6' : '#1b1c1a';
-  const statsLblColor  = isDark ? '#6b6258' : '#B5ADA3';
-  const sectionColor   = isDark ? '#8a8070' : '#7A6E63';
+  const bg = isDark ? '#12110e' : '#fbf9f6';
+  const headerColor = isDark ? '#f0ede6' : '#1b1c1a';
+  const borderColor = isDark ? '#2e2b25' : '#ebe8e3';
+  const backColor = isDark ? '#6b6258' : '#B5ADA3';
+  const statsBg = isDark ? 'rgba(201,169,110,0.06)' : 'transparent';
+  const statsValColor = isDark ? '#f0ede6' : '#1b1c1a';
+  const statsLblColor = isDark ? '#6b6258' : '#B5ADA3';
+  const sectionColor = isDark ? '#8a8070' : '#7A6E63';
 
   return (
     <>
@@ -339,7 +343,7 @@ const Dashboard = () => {
             >
               {[
                 { label: 'Total Listings', value: sellerProducts.length },
-                { label: 'Total Photos',   value: totalImages },
+                { label: 'Total Photos', value: totalImages },
                 {
                   label: 'Latest',
                   value: new Date(
@@ -361,7 +365,7 @@ const Dashboard = () => {
 
           {/* ── Content ── */}
           <div className="pb-24">
-            {!sellerProducts || sellerProducts.length === 0 ? (
+            {isLoadingProducts ? (<Loader label="Loading your listings" color={isDark ? '#e8e4dc' : '#1b1c1a'} />) : !sellerProducts || sellerProducts.length === 0 ? (
               <EmptyState onAdd={() => navigate('/seller/create-product')} isDark={isDark} />
             ) : (
               <>

@@ -54,14 +54,6 @@
   --color-golden-glow: rgba(245, 195, 66, 0.15);
   --color-golden-hover-glow: rgba(245, 195, 66, 0.30);
 
-  /* Spacing */
-  --spacing-unit: 8px;
-  --spacing-xs: 4px;
-  --spacing-sm: 12px;
-  --spacing-md: 24px;
-  --spacing-lg: 48px;
-  --spacing-xl: 80px;
-  --spacing-gutter: 24px;
 
   /* Border radii */
   --radius-DEFAULT: 0.25rem;
@@ -119,4 +111,9 @@ body {
 
 .animate-slideRight {
   animation: slideRight 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes tivyroBar {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(400%); }
 }

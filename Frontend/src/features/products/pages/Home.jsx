@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { useProduct } from '../hooks/useProduct.js';
 import { Link, useNavigate } from 'react-router';
+import { ProductGridSkeleton } from '../../Shared/components/Loader.jsx';
 
 export default function Home() {
   const products = useSelector((state) => state.product.products);
@@ -12,7 +13,11 @@ export default function Home() {
   const [imgIndex, setImgIndex] = useState({});
   const timerRef = useRef({});
 
-  useEffect(() => { handleGetAllProducts(); }, []);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    handleGetAllProducts().catch(console.error).finally(() => setLoading(false));
+  }, []);
 
   const filtered = (products || []).filter((p) => {
     const q = search.toLowerCase();
@@ -155,11 +160,11 @@ export default function Home() {
               <p style={{ fontSize: '15px', fontWeight: '300', color: '#555', maxWidth: '400px', lineHeight: '1.6' }}>
                 Discover everything new and now.
               </p>
-              <button style={{ backgroundColor: '#000', color: '#fff', padding: '14px 28px', fontSize: '11px', fontWeight: '700', letterSpacing: '0.18em', textTransform: 'uppercase', border: '1px solid #000', alignSelf: 'flex-start', cursor: 'pointer', transition: 'all 0.15s' }}
+              <a href="#products" style={{ backgroundColor: '#000', color: '#fff', padding: '14px 28px', fontSize: '11px', fontWeight: '700', letterSpacing: '0.18em', textTransform: 'uppercase', textDecoration: 'none', display: 'inline-block', border: '1px solid #000', alignSelf: 'flex-start', cursor: 'pointer', transition: 'all 0.15s' }}
                 onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#fff'; e.currentTarget.style.color = '#000'; }}
                 onMouseLeave={e => { e.currentTarget.style.backgroundColor = '#000'; e.currentTarget.style.color = '#fff'; }}>
                 EXPLORE COLLECTION
-              </button>
+              </a>
             </div>
             <div className="md:col-span-6 flex justify-center md:justify-end">
               <div style={{ width: '100%', maxWidth: '420px', aspectRatio: '4/5', overflow: 'hidden', backgroundColor: '#ccc', border: '1px solid #ddd' }}>
@@ -219,7 +224,7 @@ export default function Home() {
           </div>
 
           {/* Product Grid */}
-          {filtered.length === 0 ? (
+          {loading ? (<ProductGridSkeleton />) : filtered.length === 0 ? (
             <div className="text-center py-20 sm:py-24">
               <p style={{ fontSize: '20px', fontFamily: "'Bodoni Moda', serif", color: '#999' }}>No products found</p>
             </div>
@@ -250,14 +255,14 @@ export default function Home() {
                         onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=400&q=80'; }}
                       />
                       {/* Wishlist button */}
-                      {/* <button
+                      <button
                         aria-label="Add to wishlist"
                         onClick={(e) => e.stopPropagation()}
                         className="absolute top-2 right-2 sm:top-3 sm:right-3 p-1.5 sm:p-2 flex items-center justify-center cursor-pointer transition-opacity"
                         style={{ backgroundColor: 'rgba(255,255,255,0.9)', border: 'none', opacity: isHovered ? 1 : 0.7 }}
                       >
                         <span className="material-symbols-outlined text-[16px] sm:text-[18px] text-black">favorite</span>
-                      </button> */}
+                      </button>
                     </div>
 
                     {/* Card info */}

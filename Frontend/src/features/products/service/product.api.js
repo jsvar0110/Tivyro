@@ -1,4 +1,5 @@
 import axios from "axios";
+import { attachLoadingInterceptors } from '../../Shared/loading/requestTracker.js'
 
 const productApiInstance = axios.create({
 
@@ -6,6 +7,8 @@ const productApiInstance = axios.create({
     withCredentials: true,
 
 })
+
+attachLoadingInterceptors(productApiInstance)
 
 export async function createProduct(formData) {
 

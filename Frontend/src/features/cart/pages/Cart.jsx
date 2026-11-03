@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import { useCart } from '../hook/useCart.js'
 import { Link, useNavigate } from 'react-router'
 import { useRazorpay } from "react-razorpay"
+import Loader from '../../Shared/components/Loader.jsx'
 
 /* ─────────────────────────────────────────────────────────────────────────────
    Tivyro — Editorial Cart Page
@@ -33,9 +34,11 @@ const Cart = () => {
     const [promoCode, setPromoCode] = useState('')
     const [isClearOpen, setIsClearOpen] = useState(false)
     const [isClearing, setIsClearing] = useState(false)
+    const [isCartLoading, setIsCartLoading] = useState(true)
+    const [isCheckingOut, setIsCheckingOut] = useState(false)
 
     useEffect(() => {
-        handleGetCart()
+        handleGetCart().catch(console.error).finally(() => setIsCartLoading(false))
     }, [])
 
 
@@ -66,7 +69,16 @@ const Cart = () => {
         `${currency === 'INR' ? '₹' : `${currency} `}${Number(amount ?? 0).toLocaleString('en-IN')}`
 
     async function handleCheckout() {
-        const order = await handleCreateCartOrder()
+        setIsCheckingOut(true)
+        let order
+        try {
+            order = await handleCreateCartOrder()
+        } catch (err) {
+            console.error('Could not create order', err)
+            return
+        } finally {
+            setIsCheckingOut(false)
+        }
 
         const options = {
             key: import.meta.env.VITE_RAZORPAY_KEY_ID,
@@ -76,9 +88,14 @@ const Cart = () => {
             description: "Fashion Order Checkout",
             order_id: order.id,
             handler: async (response) => {
-                const isValid = await handleVerifyCartOrder(response)
-                if (isValid) {
-                    navigate(`/order-success?order_id=${response?.razorpay_order_id}`)
+                setIsCheckingOut(true)
+                try {
+                    const isValid = await handleVerifyCartOrder(response)
+                    if (isValid) {
+                        navigate(`/order-success?order_id=${response?.razorpay_order_id}`)
+                    }
+                } finally {
+                    setIsCheckingOut(false)
                 }
             },
             prefill: {
@@ -141,31 +158,56 @@ const Cart = () => {
 
                 {/* ── Clear Cart Confirmation Modal ── */}
                 {isClearOpen && (
-                    <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/60 px-6 backdrop-blur-[2px]">
-                        <div className="bg-white border border-black max-w-md w-full p-8 shadow-2xl">
-                            <span className="text-[10px] font-bold tracking-[0.22em] uppercase text-gray-400 block mb-2">
-                                Confirmation
-                            </span>
+                    <div
+                        className="fixed inset-0 z-[200] flex items-center justify-center bg-black/60 p-4 sm:p-6 backdrop-blur-[2px] animate-fadeIn"
+                        style={{ position: 'fixed', inset: 0, zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                        onClick={() => setIsClearOpen(false)}
+                    >
+                        <div
+                            className="bg-white border border-black p-6 sm:p-8 shadow-2xl relative"
+                            style={{ maxWidth: '460px', width: '100%', boxSizing: 'border-box' }}
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            {/* Close button */}
+                            <button
+                                onClick={() => setIsClearOpen(false)}
+                                aria-label="Close modal"
+                                className="absolute top-4 right-4 text-gray-400 hover:text-black transition-colors p-1 bg-transparent border-none cursor-pointer flex items-center justify-center"
+                            >
+                                <span className="material-symbols-outlined text-[20px]">close</span>
+                            </button>
+
+                            <div className="flex items-center gap-2 mb-2">
+                                <span className="material-symbols-outlined text-gray-400 text-[18px]">
+                                    warning
+                                </span>
+                                <span className="text-[10px] font-bold tracking-[0.22em] uppercase text-gray-400">
+                                    Confirmation
+                                </span>
+                            </div>
+
                             <h3
                                 style={{ fontFamily: "'Bodoni Moda', serif" }}
-                                className="text-2xl font-normal uppercase text-black"
+                                className="text-xl sm:text-2xl font-normal uppercase text-black tracking-tight"
                             >
                                 Clear Shopping Bag?
                             </h3>
-                            <p className="text-sm text-gray-600 mt-3 leading-relaxed">
+
+                            <p className="text-xs sm:text-sm text-gray-600 mt-2.5 sm:mt-3 leading-relaxed">
                                 All pieces currently reserved in your bag will be removed. This action cannot be reversed.
                             </p>
-                            <div className="flex justify-end gap-3 mt-8">
+
+                            <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2.5 sm:gap-3 mt-6 sm:mt-8">
                                 <button
                                     onClick={() => setIsClearOpen(false)}
-                                    className="px-6 py-2.5 border border-gray-300 text-black uppercase tracking-widest text-[11px] font-semibold hover:border-black transition-colors bg-white cursor-pointer"
+                                    className="w-full sm:w-auto px-5 py-2.5 border border-gray-300 text-black uppercase tracking-widest text-[11px] font-semibold hover:border-black transition-colors bg-white cursor-pointer text-center"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     onClick={confirmClear}
                                     disabled={isClearing}
-                                    className="px-6 py-2.5 bg-black text-white uppercase tracking-widest text-[11px] font-semibold hover:bg-neutral-800 transition-colors disabled:opacity-50 cursor-pointer"
+                                    className="w-full sm:w-auto px-5 py-2.5 bg-black text-white uppercase tracking-widest text-[11px] font-semibold hover:bg-neutral-800 transition-colors disabled:opacity-50 cursor-pointer text-center"
                                 >
                                     {isClearing ? 'Clearing…' : 'Yes, Clear All'}
                                 </button>
@@ -176,7 +218,7 @@ const Cart = () => {
 
                 {/* ── Main Cart Container ── */}
                 <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-8 md:px-16 py-8 sm:py-12">
-                    {!cart?.items?.length ? (
+                    {isCartLoading ? (<Loader label="Loading your bag" />) : !cart?.items?.length ? (
                         /* Empty State */
                         <div className="min-h-[50vh] flex flex-col items-center justify-center text-center py-12 sm:py-16">
                             <span className="material-symbols-outlined text-5xl sm:text-6xl text-gray-300 mb-4">
@@ -191,7 +233,7 @@ const Cart = () => {
                             >
                                 No Pieces Reserved
                             </h1>
-                            <p className="text-sm sm:text-base text-gray-500 max-w-md leading-relaxed mb-8">
+                            <p className="text-2xl sm:text-base text-gray-500 max-w-md leading-relaxed mb-8">
                                 Your shopping bag is currently empty. Explore our latest arrivals and curated collections to find your perfect pieces.
                             </p>
                             <Link
@@ -560,6 +602,7 @@ const Cart = () => {
                                             <button
                                                 id="proceed-checkout"
                                                 onClick={handleCheckout}
+                                                disabled={isCheckingOut}
                                                 style={{
                                                     backgroundColor: '#000',
                                                     color: '#fff',
@@ -568,9 +611,9 @@ const Cart = () => {
                                                 }}
                                                 onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#fff'; e.currentTarget.style.color = '#000'; }}
                                                 onMouseLeave={e => { e.currentTarget.style.backgroundColor = '#000'; e.currentTarget.style.color = '#fff'; }}
-                                                className="w-full py-4 px-6 text-xs font-bold tracking-[0.18em] uppercase flex items-center justify-center gap-2.5 cursor-pointer shadow-sm"
+                                                className="w-full py-4 px-6 text-xs font-bold tracking-[0.18em] uppercase flex items-center justify-center gap-2.5 cursor-pointer shadow-sm disabled:opacity-60 disabled:cursor-not-allowed"
                                             >
-                                                <span>Proceed to Checkout</span>
+                                                <span>{isCheckingOut ? 'Processing…' : 'Proceed to Checkout'}</span>
                                                 <span className="material-symbols-outlined text-[16px]">
                                                     arrow_forward
                                                 </span>

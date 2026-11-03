@@ -1,7 +1,7 @@
 import React from 'react'
 import {useSelector} from 'react-redux' 
 import {Navigate} from "react-router"
-
+import Loader from '../../Shared/components/Loader.jsx'
 
 const Protected = ({children , role = "buyer"}) => {
 
@@ -10,7 +10,7 @@ const Protected = ({children , role = "buyer"}) => {
 
   if (loading) {
     
-    return <div>Loading...</div>
+    return <Loader fullScreen label="Checking your session" />
 
   }if (!user) {
 

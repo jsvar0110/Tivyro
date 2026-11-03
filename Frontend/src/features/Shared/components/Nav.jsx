@@ -77,7 +77,7 @@ const Nav = () => {
             `}</style>
 
             {/* Main Navbar */}
-            <header className="w-full sticky top-0 z-[100] flex items-center justify-between px-4 sm:px-6 md:px-12 lg:px-16 h-16 md:h-20 bg-white border-b border-gray-200 transition-all" style={{ fontFamily: "'Inter', sans-serif" }}>
+            <header className="w-full sticky top-0 z-[100] flex items-center justify-between px-1 sm:px-6 md:px-12 lg:px-16 h-16 md:h-20 bg-white border-b border-gray-200 transition-all" style={{ fontFamily: "'Inter', sans-serif" }}>
                 
                 {/* MOBILE: Hamburger Button (< md) */}
                 <div className="flex items-center md:hidden">

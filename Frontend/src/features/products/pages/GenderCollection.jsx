@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { useProduct } from '../hooks/useProduct.js'
+import { ProductGridSkeleton } from '../../Shared/components/Loader.jsx'
 
 export default function GenderCollection({ gender }) {
   const { handleGetAllProducts } = useProduct()
@@ -26,10 +27,7 @@ export default function GenderCollection({ gender }) {
       </div>
 
       {loading ? (
-        <div className="flex flex-col items-center justify-center py-24 gap-3">
-          <div className="w-7 h-7 border-2 border-black border-t-transparent rounded-full animate-spin" />
-          <p className="text-center text-xs text-gray-500 uppercase tracking-widest">Loading pieces…</p>
-        </div>
+        <ProductGridSkeleton />
       ) : products.length === 0 ? (
         <p className="text-center py-20 sm:py-24" style={{ fontFamily: "'Bodoni Moda', serif", fontSize: '22px', color: '#999' }}>
           No products found

@@ -1,26 +1,28 @@
 import './App.css'
 import { RouterProvider } from 'react-router'
-import {routes} from'./app.routes.jsx'
+import { routes } from './app.routes.jsx'
 import { useSelector } from 'react-redux'
 import { useAuth } from '../features/auth/hook/useAuth.js'
 import { useEffect } from 'react'
+import { GlobalLoadingBar } from '../features/Shared/components/Loader.jsx'
 
 
 function App() {
 
-  const {handleGetMe} = useAuth()
+  const { handleGetMe } = useAuth()
 
   const user = useSelector(state => state.auth.user)
 
   console.log(user)
 
-  useEffect(()=>{
+  useEffect(() => {
     handleGetMe()
-  },[])
+  }, [])
 
   return (
     <>
-      <RouterProvider router={routes}/>
+      <RouterProvider router={routes} />
+      <GlobalLoadingBar />
     </>
   )
 }

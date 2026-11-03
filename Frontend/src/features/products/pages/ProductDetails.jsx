@@ -8,6 +8,7 @@ const ProductDetail = () => {
     const [product, setProduct] = useState(null);
     const [selectedImage, setSelectedImage] = useState(0);
     const [cartMessage, setCartMessage] = useState('');
+    const [isAdding, setIsAdding] = useState(false);
 
     const [selectedAttributes, setSelectedAttributes] = useState({});
     const navigate = useNavigate();
@@ -290,7 +291,7 @@ const ProductDetail = () => {
                             <div className="flex flex-col gap-4 mt-auto">
                                 <button
                                     className="w-full py-4 text-[11px] uppercase tracking-[0.25em] font-medium transition-all duration-300"
-                                    disabled={isOutOfStock}
+                                    disabled={isOutOfStock || isAdding}
                                     style={{
                                         backgroundColor: isOutOfStock ? '#B5ADA3' : '#1b1c1a',
                                         color: '#fbf9f6',
@@ -317,6 +318,7 @@ const ProductDetail = () => {
                                             return
                                         }
                                         try {
+                                            setIsAdding(true)
                                             setCartMessage('')
                                             await handleAddItem({
                                                 productId: product._id,
@@ -325,10 +327,12 @@ const ProductDetail = () => {
                                             setCartMessage('Added to cart')
                                         } catch (err) {
                                             setCartMessage(err.response?.data?.message || 'Could not add to cart')
+                                        } finally {
+                                            setIsAdding(false)
                                         }
                                     }}
                                 >
-                                    {isOutOfStock ? 'Out of Stock' : 'Add to Cart'}
+                                    {isAdding ? 'Adding…' : isOutOfStock ? 'Out of Stock' : 'Add to Cart'}
                                 </button>
 
                                 {cartMessage && (
