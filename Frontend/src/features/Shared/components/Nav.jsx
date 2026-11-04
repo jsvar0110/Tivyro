@@ -92,7 +92,7 @@ const Nav = () => {
             `}</style>
 
             {/* Main Navbar */}
-            <header className="w-full sticky top-0 z-[100] flex items-center justify-between px-1 sm:px-6 md:px-12 lg:px-16 h-16 md:h-20 bg-white border-b border-gray-200 transition-all" style={{ fontFamily: "'Inter', sans-serif" }}>
+            <header className="w-full sticky top-0 z-[100] grid grid-cols-[36px_minmax(0,1fr)_auto] items-center gap-2 px-3 sm:px-6 md:flex md:justify-between md:gap-0 md:px-12 lg:px-16 h-16 md:h-20 bg-white border-b border-gray-200 transition-all">
 
                 {/* MOBILE: Hamburger Button (< md) */}
                 <div className="flex items-center md:hidden">
@@ -124,26 +124,26 @@ const Nav = () => {
                 </nav>
 
                 {/* CENTER: Brand logo (Responsive sizing & placement) */}
-                <div className="absolute left-1/2 -translate-x-1/2 flex items-center">
+                <div className="col-start-2 relative flex min-w-0 items-center justify-center md:absolute md:left-1/2 md:-translate-x-1/2">
                     <Link
                         to="/"
                         className="no-underline transition-opacity hover:opacity-80"
                         style={{
                             fontFamily: "'Bodoni Moda', serif",
                             fontWeight: '700',
-                            letterSpacing: '0.18em',
+
                             color: '#000',
                             textTransform: 'uppercase',
                         }}
                     >
-                        <span className="text-xl sm:text-2xl md:text-[28px]">
+                        <span className="text-lg tracking-[0.12em] whitespace-nowrap sm:text-2xl sm:tracking-[0.18em] md:text-[28px]">
                             TIVYRO
                         </span>
                     </Link>
                 </div>
 
                 {/* RIGHT: Actions */}
-                <div className="flex items-center gap-3 sm:gap-4 md:gap-6">
+                <div className="col-start-3 flex shrink-0 items-center justify-end gap-2 sm:gap-4 md:gap-6">
                     {/* Search - visible icon on all screens, text on md+ */}
                     <button
                         onClick={() => {
@@ -228,16 +228,18 @@ const Nav = () => {
                             </div>
                         </div>
                     ) : (
-                        <Link to="/login" className="flex items-center gap-1.5 text-gray-700 hover:text-black transition-colors no-underline p-1.5 sm:p-0">
-                            <span className="material-symbols-outlined" style={{ fontSize: '19px' }}>person</span>
-                            <span className="hidden md:inline text-[11px] font-semibold tracking-widest uppercase">SIGN IN</span>
+                        <Link
+                            to="/login"
+                            className="shrink-0 whitespace-nowrap bg-black px-2.5 py-2 sm:px-4 text-[10px] sm:text-[11px] font-semibold tracking-widest text-white uppercase hover:bg-gray-800 transition-colors no-underline"
+                        >
+                            SIGN IN
                         </Link>
                     )}
 
                     {/* Cart */}
                     <Link
                         to="/cart"
-                        className="relative flex items-center gap-1.5 text-black hover:text-gray-600 transition-colors no-underline p-1.5 sm:p-0"
+                        className="relative shrink-0 flex items-center gap-1.5 text-black hover:text-gray-600 transition-colors no-underline p-1.5 sm:p-0"
                         aria-label={`Cart with ${cartCount} items`}
                     >
                         <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>shopping_bag</span>
@@ -312,7 +314,7 @@ const Nav = () => {
                                     style={{
                                         fontFamily: "'Bodoni Moda', serif",
                                         fontWeight: '700',
-                                        letterSpacing: '0.18em',
+
                                         color: '#000',
                                         fontSize: '20px',
                                         textTransform: 'uppercase',
@@ -407,8 +409,7 @@ const Nav = () => {
                                 <div className="flex flex-col gap-2.5">
                                     <Link
                                         to="/login"
-                                        onClick={() => setIsMobileMenuOpen(false)}
-                                        className="w-full py-3 bg-black text-white text-center text-xs font-semibold tracking-widest uppercase hover:bg-gray-800 transition-colors no-underline"
+                                        className="shrink-0 whitespace-nowrap bg-black px-2.5 py-2 sm:px-4 text-[10px] sm:text-[11px] font-semibold tracking-widest text-white uppercase hover:bg-gray-800 transition-colors no-underline"
                                     >
                                         SIGN IN
                                     </Link>
