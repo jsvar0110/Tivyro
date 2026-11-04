@@ -1,5 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useParams, Link, useNavigate } from 'react-router';
+import { useSelector } from 'react-redux';
+import { useRazorpay } from 'react-razorpay';
 import { useProduct } from '../hooks/useProduct';
 import { useCart } from "../../cart/hook/useCart.js"
 
@@ -13,7 +15,17 @@ const ProductDetail = () => {
     const [selectedAttributes, setSelectedAttributes] = useState({});
     const navigate = useNavigate();
     const { handleGetProductById } = useProduct();
-    const { handleAddItem } = useCart()
+    const {
+        handleAddItem,
+        handleCreateCartOrder,
+        handleVerifyCartOrder
+    } = useCart();
+
+    const { Razorpay, isLoading: razorpayLoading, error: razorpayError } = useRazorpay();
+
+    const user = useSelector(state => state.auth.user);
+
+    const [isBuyingNow, setIsBuyingNow] = useState(false);
 
     async function fetchProductDetails() {
         try {
@@ -131,6 +143,156 @@ const ProductDetail = () => {
 
     const images = activeProduct.images;
     const isOutOfStock = activeProduct.stock !== undefined && activeProduct.stock !== null && activeProduct.stock <= 0;
+
+    async function handleBuyNow() {
+
+        // 1. Check authentication
+        if (!user) {
+            navigate('/login');
+            return;
+        }
+
+        // 2. Check whether a variant is selected
+        if (!activeProduct.variantId) {
+            setCartMessage(
+                product.variants?.length
+                    ? "Please select a variant first"
+                    : "This product has no purchasable variant"
+            );
+            return;
+        }
+
+        // 3. Check stock
+        if (isOutOfStock) {
+            setCartMessage("This product is out of stock");
+            return;
+        }
+
+        // 4. Check Razorpay availability
+        if (razorpayLoading || !Razorpay) {
+            setCartMessage("Payment checkout is loading. Try again.");
+            return;
+        }
+
+        if (razorpayError) {
+            setCartMessage("Unable to load payment checkout");
+            return;
+        }
+
+        setIsBuyingNow(true);
+        setCartMessage("");
+
+        try {
+
+            // 5. Create a Razorpay order for this product only
+            const order = await handleCreateCartOrder({
+                productId: product._id,
+                variantId: activeProduct.variantId,
+                quantity: 1
+            });
+
+            // 6. Configure Razorpay checkout
+            const options = {
+
+                key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+
+                amount: order.amount,
+
+                currency: order.currency,
+
+                name: "Tivyro",
+
+                description: product.title,
+
+                order_id: order.id,
+
+                handler: async (response) => {
+
+                    try {
+
+                        // 7. Verify payment through existing backend controller
+                        const isValid =
+                            await handleVerifyCartOrder(response);
+
+                        if (isValid) {
+
+                            navigate(
+                                `/order-success?order_id=${response.razorpay_order_id}`
+                            );
+
+                        } else {
+
+                            setCartMessage("Payment verification failed");
+
+                        }
+
+                    } catch (error) {
+
+                        console.error("Payment verification failed:", error);
+
+                        setCartMessage(
+                            "Unable to verify payment. Please contact support."
+                        );
+
+                    } finally {
+
+                        setIsBuyingNow(false);
+
+                    }
+                },
+
+                prefill: {
+                    name: user?.fullname,
+                    email: user?.email,
+                    contact: user?.contact
+                },
+
+                theme: {
+                    color: "#000000"
+                },
+
+                modal: {
+                    ondismiss: () => {
+                        setIsBuyingNow(false);
+                    }
+                }
+            };
+
+            // 8. Open Razorpay
+            const razorpayInstance = new Razorpay(options);
+
+            razorpayInstance.on("payment.failed", (response) => {
+
+                console.error("Payment failed:", response);
+
+                setCartMessage(
+                    response.error?.description ||
+                    "Payment failed. Please try again."
+                );
+
+                setIsBuyingNow(false);
+
+            });
+
+            razorpayInstance.open();
+
+        } catch (error) {
+
+            console.error("Buy Now failed:", error);
+
+            if (error.response?.status === 401) {
+                navigate('/login');
+                return;
+            }
+
+            setCartMessage(
+                error.response?.data?.message ||
+                "Unable to start checkout"
+            );
+
+            setIsBuyingNow(false);
+        }
+    }
 
     return (
         <>
@@ -342,7 +504,8 @@ const ProductDetail = () => {
                                 )}
                                 <button
                                     className="w-full py-4 text-[11px] uppercase tracking-[0.25em] font-medium transition-all duration-300 border"
-                                    disabled={isOutOfStock}
+                                    onClick={handleBuyNow}
+                                    disabled={isOutOfStock || isBuyingNow}
                                     style={{
                                         backgroundColor: 'transparent',
                                         borderColor: isOutOfStock ? '#e4e2df' : '#d0c5b5',
@@ -362,7 +525,11 @@ const ProductDetail = () => {
                                         }
                                     }}
                                 >
-                                    Buy Now
+                                    {isBuyingNow
+                                        ? "Opening Checkout..."
+                                        : isOutOfStock
+                                            ? "Out of Stock"
+                                            : "Buy Now"}
                                 </button>
                             </div>
 

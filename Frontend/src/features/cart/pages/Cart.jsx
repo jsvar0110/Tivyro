@@ -296,7 +296,7 @@ const Cart = () => {
                                 <div className="lg:col-span-8 flex flex-col gap-6">
 
                                     {/* Complimentary Dispatch Announcement */}
-                                    <div className="bg-white border border-gray-200 p-5 flex items-center justify-between gap-4">
+                                    {/* <div className="bg-white border border-gray-200 p-5 flex items-center justify-between gap-4">
                                         <div className="flex items-center gap-3.5">
                                             <span className="material-symbols-outlined text-2xl text-black">
                                                 local_shipping
@@ -313,7 +313,7 @@ const Cart = () => {
                                         <span className="text-[10px] font-bold tracking-widest uppercase border border-black px-2.5 py-1 bg-black text-white shrink-0">
                                             ACTIVE
                                         </span>
-                                    </div>
+                                    </div> */}
 
                                     {/* Cart Items List */}
                                     <div className="bg-white border border-gray-200 divide-y divide-gray-200">
@@ -408,11 +408,11 @@ const Cart = () => {
                                                             {variantPrice && unitPrice !== variantPrice.amount && (
                                                                 <div className="mt-2">
                                                                     {unitPrice > variantPrice.amount ? (
-                                                                        <p className="text-[11px] uppercase tracking-wider text-emerald-800 font-semibold">
+                                                                        <p className="text-[15px] uppercase tracking-wider text-emerald-800 font-semibold">
                                                                             Offer applied: {formatCurrency(variantPrice.amount, variantPrice.currency)} (You save {formatCurrency(unitPrice - variantPrice.amount)})
                                                                         </p>
                                                                     ) : (
-                                                                        <p className="text-[11px] uppercase tracking-wider text-red-600 font-semibold">
+                                                                        <p className="text-[15px] uppercase tracking-wider text-red-600 font-semibold">
                                                                             Price updated: {formatCurrency(variantPrice.amount - unitPrice)} difference
                                                                         </p>
                                                                     )}

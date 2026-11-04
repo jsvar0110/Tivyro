@@ -194,54 +194,193 @@ export const decrementCartItemQuantity = async (req, res) => {
     return res.status(200).json({ message: "Cart item decremented successfully", status: true })
 }
 
+
 export const createOrderController = async (req, res) => {
+    try {
+        const { productId, variantId, quantity = 1 } = req.body || {};
 
-    const cart = await getCartDetails(req.user._id)
+        let amount;
+        let currency;
+        let orderItems;
 
-    if (!cart) {
+        // =====================================
+        // CASE 1: BUY NOW — SINGLE PRODUCT
+        // =====================================
 
-        return res.status(400).json({
-            message: "Cart is empty",
-            success: false
-        })
+        const isBuyNow =
+            productId !== undefined || variantId !== undefined;
 
-    }
+        if (isBuyNow) {
 
-    const order = await createOrder({ amount: cart.totalPrice, currency: cart.currency })
-
-    const payment = await paymentModel.create({
-        user: req.user._id,
-        razorpay: {
-            orderId: order.id
-        },
-        price: {
-            amount: cart.totalPrice,
-            currency: cart.currency
-        },
-        orderItems: cart.items.map(item => ({
-            title: item.product.title,
-            productId: item.product._id,
-            variantId: item.variant,
-            quantity: item.quantity,
-            images: item.product.variants.images || item.product.images,
-            description: item.product.description,
-            price: {
-                amount: item.product.variants.price.amount || item.product.price.amount,
-                currency: item.product.variants.price.currency || item.product.price.currency,
-
+            // Validate the incoming product details
+            if (
+                !mongoose.isValidObjectId(productId) ||
+                !mongoose.isValidObjectId(variantId) ||
+                !Number.isInteger(quantity) ||
+                quantity < 1
+            ) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Invalid product, variant or quantity"
+                });
             }
-        }))
 
-    })
+            // Fetch product from MongoDB
+            const product = await findProductById(
+                productId,
+                { "variants._id": variantId }
+            );
 
+            if (!product) {
+                return res.status(404).json({
+                    success: false,
+                    message: "Product or variant not found"
+                });
+            }
 
-    return res.status(200).json({
-        message: "Order created successfully",
-        success: true,
-        order
-    })
+            // Find the selected variant
+            const variant = product.variants.find(
+                item => item._id.toString() === variantId
+            );
 
-}
+            if (!variant) {
+                return res.status(404).json({
+                    success: false,
+                    message: "Selected variant not found"
+                });
+            }
+
+            // Check available stock
+            if ((variant.stock ?? 0) < quantity) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Insufficient stock"
+                });
+            }
+
+            // Get price from variant, or product if variant has no price
+            const selectedPrice =
+                variant.price?.amount != null
+                    ? variant.price
+                    : product.price;
+
+            amount = selectedPrice.amount * quantity;
+            currency = selectedPrice.currency || "INR";
+
+            if (!Number.isFinite(amount) || amount <= 0) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Invalid product price"
+                });
+            }
+
+            // Create payment item for only this product
+            orderItems = [
+                {
+                    title: product.title,
+                    productId: product._id,
+                    variantId: variant._id,
+                    quantity,
+
+                    images: variant.images?.length
+                        ? variant.images
+                        : product.images,
+
+                    description: product.description,
+
+                    price: {
+                        amount: selectedPrice.amount,
+                        currency
+                    }
+                }
+            ];
+
+        } else {
+
+            // =====================================
+            // CASE 2: EXISTING CART CHECKOUT
+            // =====================================
+
+            const cart = await getCartDetails(req.user._id);
+
+            if (!cart || !cart.items?.length) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Cart is empty"
+                });
+            }
+
+            amount = cart.totalPrice;
+            currency = cart.currency || "INR";
+
+            orderItems = cart.items.map(item => {
+                const variant = item.product.variants;
+
+                const itemPrice =
+                    variant?.price?.amount != null
+                        ? variant.price
+                        : item.product.price;
+
+                return {
+                    title: item.product.title,
+                    productId: item.product._id,
+                    variantId: item.variant,
+                    quantity: item.quantity,
+
+                    images: variant?.images?.length
+                        ? variant.images
+                        : item.product.images,
+
+                    description: item.product.description,
+
+                    price: {
+                        amount: itemPrice.amount,
+                        currency: itemPrice.currency || currency
+                    }
+                };
+            });
+        }
+
+        // =====================================
+        // COMMON RAZORPAY ORDER CREATION
+        // =====================================
+
+        const order = await createOrder({
+            amount,
+            currency
+        });
+
+        // Save payment information in MongoDB
+        await paymentModel.create({
+            user: req.user._id,
+
+            razorpay: {
+                orderId: order.id
+            },
+
+            price: {
+                amount,
+                currency
+            },
+
+            orderItems
+        });
+
+        return res.status(200).json({
+            success: true,
+            message: "Order created successfully",
+            order
+        });
+
+    } catch (error) {
+        console.error("Order creation failed:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Could not create order"
+        });
+    }
+};
 
 
 
@@ -256,6 +395,7 @@ export const verifyOrderController = async (req, res) => {
 
     const payment = await paymentModel.findOne({
         "razorpay.orderId": razorpay_order_id,
+        user: req.user._id,
         status: "pending"
     })
 

@@ -12,6 +12,8 @@ const Nav = () => {
 
     const [isSettingsOpen, setIsSettingsOpen] = useState(false)
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+    const [isSearchOpen, setIsSearchOpen] = useState(false)
+    const [searchQuery, setSearchQuery] = useState('')
     const settingsRef = useRef(null)
     const mobileMenuRef = useRef(null)
 
@@ -21,11 +23,24 @@ const Nav = () => {
         await handleLogout()
         navigate('/')
     }
+    const handleSearchSubmit = (e) => {
+        e.preventDefault()
+
+        const query = searchQuery.trim()
+
+        if (!query) return
+
+        setIsSearchOpen(false)
+        setIsMobileMenuOpen(false)
+
+        navigate(`/search?q=${encodeURIComponent(query)}`)
+    }
 
     // Close mobile menu and settings on route navigation
     useEffect(() => {
         setIsMobileMenuOpen(false)
         setIsSettingsOpen(false)
+        setIsSearchOpen(false)
     }, [location.pathname])
 
     // Close settings dropdown on click outside
@@ -78,7 +93,7 @@ const Nav = () => {
 
             {/* Main Navbar */}
             <header className="w-full sticky top-0 z-[100] flex items-center justify-between px-1 sm:px-6 md:px-12 lg:px-16 h-16 md:h-20 bg-white border-b border-gray-200 transition-all" style={{ fontFamily: "'Inter', sans-serif" }}>
-                
+
                 {/* MOBILE: Hamburger Button (< md) */}
                 <div className="flex items-center md:hidden">
                     <button
@@ -131,7 +146,12 @@ const Nav = () => {
                 <div className="flex items-center gap-3 sm:gap-4 md:gap-6">
                     {/* Search - visible icon on all screens, text on md+ */}
                     <button
+                        onClick={() => {
+                            setIsSearchOpen((prev) => !prev)
+                            setIsSettingsOpen(false)
+                        }}
                         aria-label="Search"
+                        aria-expanded={isSearchOpen}
                         className="flex items-center gap-1.5 text-gray-700 hover:text-black transition-colors cursor-pointer bg-transparent border-none p-1.5 sm:p-0"
                     >
                         <span className="material-symbols-outlined" style={{ fontSize: '19px' }}>search</span>
@@ -230,6 +250,45 @@ const Nav = () => {
                         </span>
                     </Link>
                 </div>
+                {isSearchOpen && (
+                    <div className="absolute left-0 top-full z-[110] w-full border-b border-gray-200 bg-white px-4 py-4 shadow-md sm:px-8">
+
+                        <form
+                            onSubmit={handleSearchSubmit}
+                            className="mx-auto flex max-w-3xl items-center gap-3"
+                        >
+                            <span className="material-symbols-outlined text-gray-500">
+                                search
+                            </span>
+
+                            <input
+                                type="text"
+                                autoFocus
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                placeholder="Search products..."
+                                className="min-w-0 text-black flex-1 border-b border-gray-300 bg-transparent py-2 text-sm outline-none focus:border-black"
+                            />
+
+                            <button
+                                type="submit"
+                                className="bg-black px-4 py-2 text-[10px] font-semibold tracking-widest text-white hover:bg-gray-800"
+                            >
+                                SEARCH
+                            </button>
+
+                            <button
+                                type="button"
+                                onClick={() => setIsSearchOpen(false)}
+                                aria-label="Close search"
+                                className="text-gray-500 hover:text-black"
+                            >
+                                ✕
+                            </button>
+                        </form>
+
+                    </div>
+                )}
             </header>
 
             {/* Mobile Menu Backdrop & Drawer */}

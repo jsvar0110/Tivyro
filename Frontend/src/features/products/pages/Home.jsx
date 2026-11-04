@@ -21,7 +21,11 @@ export default function Home() {
 
   const filtered = (products || []).filter((p) => {
     const q = search.toLowerCase();
-    return p.title?.toLowerCase().includes(q) || p.description?.toLowerCase().includes(q);
+    return (
+      p.title?.toLowerCase().includes(q) ||
+      p.description?.toLowerCase().includes(q) ||
+      p.gender?.toLowerCase().includes(q)
+    );
   });
 
   function handleCardEnter(id, count) {

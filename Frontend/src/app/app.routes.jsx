@@ -12,6 +12,7 @@ import Applayout from "./AppLayout.jsx"
 import OrderSuccess from "../features/cart/pages/OrderSuccess.jsx"
 import GenderCollection from "../features/products/pages/GenderCollection.jsx"
 import GuestOnly from "../features/auth/components/GuestOnly.jsx"
+import SearchResults from "../features/products/pages/SearchResults.jsx"
 
 export const routes = createBrowserRouter([
     {
@@ -30,6 +31,10 @@ export const routes = createBrowserRouter([
             {
                 path: '/',
                 element: <Home />
+            },
+            {
+                path: '/search',
+                element: <SearchResults />
             },
             { path: '/men', element: <GenderCollection gender="men" /> },
             { path: '/women', element: <GenderCollection gender="women" /> },
