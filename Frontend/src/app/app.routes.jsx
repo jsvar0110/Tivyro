@@ -48,7 +48,11 @@ export const routes = createBrowserRouter([
             },
             {
                 path: '/order-success',
-                element: <OrderSuccess />
+                element: (
+                    <Protected>
+                        <OrderSuccess />
+                    </Protected>
+                )
             },
 
 

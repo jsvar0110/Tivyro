@@ -1,7 +1,7 @@
-import express from "express" 
-import {authenticateUser} from "../middlewares/auth.middleware.js"
-import { validateAddToCart ,validateIncrementCartItemQuantity } from "../validator/cart.validator.js"
-import { addToCart, createOrderController ,  getCart, incrementCartItemQuantity , decrementCartItemQuantity , verifyOrderController , removeCartItem , clearCart } from "../controllers/cart.controller.js"
+import express from "express"
+import { authenticateUser } from "../middlewares/auth.middleware.js"
+import { validateAddToCart, validateIncrementCartItemQuantity } from "../validator/cart.validator.js"
+import { addToCart, createOrderController, getCart, incrementCartItemQuantity, decrementCartItemQuantity, verifyOrderController, getOrderDetailsController, removeCartItem, clearCart } from "../controllers/cart.controller.js"
 
 const router = express.Router()
 
@@ -18,16 +18,16 @@ const router = express.Router()
 **/
 
 
-router.post("/add/:productId/:variantId" , authenticateUser, validateAddToCart , addToCart)
+router.post("/add/:productId/:variantId", authenticateUser, validateAddToCart, addToCart)
 
 
 /** 
  * @route GET /api/cart
  * @desc Get the user's cart
  * @access Private
-**/ 
+**/
 
-router.get('/' , authenticateUser , getCart)
+router.get('/', authenticateUser, getCart)
 
 
 /**
@@ -39,18 +39,20 @@ router.get('/' , authenticateUser , getCart)
  * @argument variantId - ID of the variant to update
  **/
 
-router.patch("/quantity/increment/:productId/:variantId" , authenticateUser , validateIncrementCartItemQuantity , incrementCartItemQuantity)
+router.patch("/quantity/increment/:productId/:variantId", authenticateUser, validateIncrementCartItemQuantity, incrementCartItemQuantity)
 
 
-router.patch("/quantity/decrement/:productId/:variantId" , authenticateUser , validateIncrementCartItemQuantity , decrementCartItemQuantity)
+router.patch("/quantity/decrement/:productId/:variantId", authenticateUser, validateIncrementCartItemQuantity, decrementCartItemQuantity)
 
 /**
  * @route POST /api/cart/payment/create/order
  */
 
-router.post("/payment/create/order", authenticateUser , createOrderController)
+router.post("/payment/create/order", authenticateUser, createOrderController)
 
-router.post("/payment/verify/order" , authenticateUser , verifyOrderController)
+router.post("/payment/verify/order", authenticateUser, verifyOrderController)
+
+router.get("/payment/order/:orderId", authenticateUser, getOrderDetailsController);
 
 
 /**
@@ -58,13 +60,13 @@ router.post("/payment/verify/order" , authenticateUser , verifyOrderController)
  * @desc Remove one item from the cart
  * @access Private
  */
-router.delete("/item/:productId/:variantId" , authenticateUser , validateIncrementCartItemQuantity , removeCartItem)
+router.delete("/item/:productId/:variantId", authenticateUser, validateIncrementCartItemQuantity, removeCartItem)
 
 /**
  * @route DELETE /api/cart
  * @desc Remove every item from the cart
  * @access Private
  */
-router.delete("/" , authenticateUser , clearCart)
+router.delete("/", authenticateUser, clearCart)
 
 export default router

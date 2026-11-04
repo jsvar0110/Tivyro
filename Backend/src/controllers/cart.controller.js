@@ -433,6 +433,63 @@ export const verifyOrderController = async (req, res) => {
     })
 }
 
+export const getOrderDetailsController = async (req, res) => {
+    try {
+        const { orderId } = req.params;
+
+        if (!orderId) {
+            return res.status(400).json({
+                success: false,
+                message: "Order ID is required"
+            });
+        }
+
+        // Find only this user's successfully paid order
+        const payment = await paymentModel.findOne({
+            "razorpay.orderId": orderId,
+            user: req.user._id,
+            status: "paid"
+        })
+        .select("status price razorpay.orderId orderItems")
+        .lean();
+
+        if (!payment) {
+            return res.status(404).json({
+                success: false,
+                message: "Paid order not found"
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+
+            order: {
+                orderId: payment.razorpay.orderId,
+                status: payment.status,
+                price: payment.price,
+
+                items: payment.orderItems.map(item => ({
+                    title: item.title,
+                    productId: item.productId,
+                    variantId: item.variantId,
+                    quantity: item.quantity,
+                    images: item.images,
+                    description: item.description,
+                    price: item.price
+                }))
+            }
+        });
+
+    } catch (error) {
+        console.error("Get order details error:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Unable to retrieve order details"
+        });
+    }
+};
+
 
 
 export const removeCartItem = async (req, res) => {
