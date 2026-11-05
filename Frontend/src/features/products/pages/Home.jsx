@@ -259,14 +259,14 @@ export default function Home() {
                         onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=400&q=80'; }}
                       />
                       {/* Wishlist button */}
-                      <button
+                      {/* <button
                         aria-label="Add to wishlist"
                         onClick={(e) => e.stopPropagation()}
                         className="absolute top-2 right-2 sm:top-3 sm:right-3 p-1.5 sm:p-2 flex items-center justify-center cursor-pointer transition-opacity"
                         style={{ backgroundColor: 'rgba(255,255,255,0.9)', border: 'none', opacity: isHovered ? 1 : 0.7 }}
                       >
                         <span className="material-symbols-outlined text-[16px] sm:text-[18px] text-black">favorite</span>
-                      </button>
+                      </button> */}
                     </div>
 
                     {/* Card info */}
